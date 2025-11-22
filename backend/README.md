@@ -1,5 +1,3 @@
-markdown
-
 # Renewly Backend
 
 Subscription renewal reminder backend API built with Node.js, Express, PostgreSQL, and Prisma.
