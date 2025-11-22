@@ -1,6 +1,6 @@
-const cron = require('node-cron');
-const { PrismaClient } = require('@prisma/client');
-const emailService = require('./emailService');
+import cron from 'node-cron';
+import { PrismaClient } from '@prisma/client';
+import emailService from './emailService.js';
 
 const prisma = new PrismaClient();
 
@@ -79,4 +79,4 @@ class CronService {
     }
 }
 
-module.exports = new CronService();
+export default new CronService();

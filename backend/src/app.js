@@ -1,13 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
 
 // Import routes
-const authRoutes = require('./routes/auth');
-const subscriptionRoutes = require('./routes/subscriptions');
+import authRoutes from './routes/auth.js';
+import subscriptionRoutes from './routes/subscriptions.js';
 
 // Import services
-const cronService = require('./services/cronService');
+import cronService from './services/cronService.js';
 
 const app = express();
 
@@ -46,4 +46,4 @@ app.use('*', (req, res) => {
 // Start cron service
 cronService.startDailyEmailCron();
 
-module.exports = app;
+export default app;

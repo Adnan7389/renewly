@@ -1,10 +1,10 @@
-const bcrypt = require('bcryptjs');
-const { PrismaClient } = require('@prisma/client');
-const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
+import bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 
 const prisma = new PrismaClient();
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
     try {
         const { email, name, password } = req.body;
 
@@ -46,7 +46,7 @@ const register = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -95,7 +95,7 @@ const login = async (req, res) => {
     }
 };
 
-const refresh = async (req, res) => {
+export const refresh = async (req, res) => {
     try {
         const { refreshToken } = req.body;
 
@@ -127,7 +127,7 @@ const refresh = async (req, res) => {
     }
 };
 
-const logout = async (req, res) => {
+export const logout = async (req, res) => {
     try {
         const { refreshToken } = req.body;
 
@@ -142,11 +142,4 @@ const logout = async (req, res) => {
         console.error('Logout error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
-
-module.exports = {
-    register,
-    login,
-    refresh,
-    logout,
 };

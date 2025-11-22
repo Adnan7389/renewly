@@ -1,6 +1,6 @@
-const { verifyAccessToken } = require('../utils/jwt');
+import { verifyAccessToken } from '../utils/jwt.js';
 
-const authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -16,5 +16,3 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).json({ error: 'Invalid or expired token' });
     }
 };
-
-module.exports = { authenticateToken };

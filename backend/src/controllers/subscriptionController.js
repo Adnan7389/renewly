@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const getSubscriptions = async (req, res) => {
+export const getSubscriptions = async (req, res) => {
     try {
         const subscriptions = await prisma.subscription.findMany({
             where: { userId: req.user.userId },
@@ -16,7 +16,7 @@ const getSubscriptions = async (req, res) => {
     }
 };
 
-const createSubscription = async (req, res) => {
+export const createSubscription = async (req, res) => {
     try {
         const { name, cost, renewalDate, frequency, description } = req.body;
 
@@ -44,7 +44,7 @@ const createSubscription = async (req, res) => {
     }
 };
 
-const updateSubscription = async (req, res) => {
+export const updateSubscription = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, cost, renewalDate, frequency, description } = req.body;
@@ -76,7 +76,7 @@ const updateSubscription = async (req, res) => {
     }
 };
 
-const deleteSubscription = async (req, res) => {
+export const deleteSubscription = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -98,11 +98,4 @@ const deleteSubscription = async (req, res) => {
         console.error('Delete subscription error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
-
-module.exports = {
-    getSubscriptions,
-    createSubscription,
-    updateSubscription,
-    deleteSubscription,
 };

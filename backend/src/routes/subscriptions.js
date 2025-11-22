@@ -1,11 +1,11 @@
-const express = require('express');
-const { authenticateToken } = require('../middleware/auth');
-const {
+import express from 'express';
+import { authenticateToken } from '../middleware/auth.js';
+import {
     getSubscriptions,
     createSubscription,
     updateSubscription,
     deleteSubscription,
-} = require('../controllers/subscriptionController');
+} from '../controllers/subscriptionController.js';
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.post('/', createSubscription);
 router.put('/:id', updateSubscription);
 router.delete('/:id', deleteSubscription);
 
-module.exports = router;
+export default router;

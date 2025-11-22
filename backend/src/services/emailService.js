@@ -1,44 +1,44 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 class EmailService {
-    constructor() {
-        this.transporter = nodemailer.createTransporter({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
-        });
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
+  async sendRenewalReminder(userEmail, userName, subscriptions) {
+    try {
+      const subject = `Renewly: ${subscriptions.length} subscription${subscriptions.length > 1 ? 's' : ''} renewing tomorrow`;
+
+      const html = this.generateReminderEmail(userName, subscriptions);
+
+      const mailOptions = {
+        from: process.env.FROM_EMAIL,
+        to: userEmail,
+        subject,
+        html,
+      };
+
+      const result = await this.transporter.sendMail(mailOptions);
+      console.log(`📧 Reminder email sent to ${userEmail}:`, result.messageId);
+      return result;
+    } catch (error) {
+      console.error(`❌ Failed to send email to ${userEmail}:`, error);
+      throw error;
     }
+  }
 
-    async sendRenewalReminder(userEmail, userName, subscriptions) {
-        try {
-            const subject = `Renewly: ${subscriptions.length} subscription${subscriptions.length > 1 ? 's' : ''} renewing tomorrow`;
+  generateReminderEmail(userName, subscriptions) {
+    const totalCost = subscriptions.reduce((sum, sub) => sum + sub.cost, 0);
 
-            const html = this.generateReminderEmail(userName, subscriptions);
-
-            const mailOptions = {
-                from: process.env.FROM_EMAIL,
-                to: userEmail,
-                subject,
-                html,
-            };
-
-            const result = await this.transporter.sendMail(mailOptions);
-            console.log(`📧 Reminder email sent to ${userEmail}:`, result.messageId);
-            return result;
-        } catch (error) {
-            console.error(`❌ Failed to send email to ${userEmail}:`, error);
-            throw error;
-        }
-    }
-
-    generateReminderEmail(userName, subscriptions) {
-        const totalCost = subscriptions.reduce((sum, sub) => sum + sub.cost, 0);
-
-        const subscriptionList = subscriptions
-            .map(sub => `
+    const subscriptionList = subscriptions
+      .map(sub => `
         <tr style="border-bottom: 1px solid #e5e7eb;">
           <td style="padding: 12px 0; font-weight: 500;">${sub.name}</td>
           <td style="padding: 12px 0; text-align: right; color: #ef4444; font-weight: 600;">
@@ -46,9 +46,9 @@ class EmailService {
           </td>
         </tr>
       `)
-            .join('');
+      .join('');
 
-        return `
+    return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -120,18 +120,18 @@ class EmailService {
         </body>
       </html>
     `;
-    }
+  }
 
-    async testConnection() {
-        try {
-            await this.transporter.verify();
-            console.log('✅ Email service connection successful');
-            return true;
-        } catch (error) {
-            console.error('❌ Email service connection failed:', error);
-            return false;
-        }
+  async testConnection() {
+    try {
+      await this.transporter.verify();
+      console.log('✅ Email service connection successful');
+      return true;
+    } catch (error) {
+      console.error('❌ Email service connection failed:', error);
+      return false;
     }
+  }
 }
 
-module.exports = new EmailService();
+export default new EmailService();
