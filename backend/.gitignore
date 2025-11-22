@@ -47,3 +47,4 @@ coverage
 
 # npm pack output
 *.tgz
+.env
