@@ -1,6 +1,7 @@
-import { verifyAccessToken } from '../utils/jwt.js';
+import { Request, Response, NextFunction } from 'express';
+import { verifyAccessToken } from '../utils/jwt';
 
-export const authenticateToken = (req, res, next) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -10,7 +11,7 @@ export const authenticateToken = (req, res, next) => {
 
     try {
         const decoded = verifyAccessToken(token);
-        req.user = decoded;
+        (req as any).user = decoded;
         next();
     } catch (error) {
         return res.status(403).json({ error: 'Invalid or expired token' });
