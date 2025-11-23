@@ -1,8 +1,15 @@
 import cron from 'node-cron';
-import { PrismaClient } from '@prisma/client';
-import emailService from './emailService.js';
+import { PrismaClient, User, Subscription } from '@prisma/client';
+import emailService from './emailService';
 
 const prisma = new PrismaClient();
+
+interface UserSubscriptions {
+    [key: string]: {
+        user: User;
+        subscriptions: Subscription[];
+    };
+}
 
 class CronService {
     startDailyEmailCron() {
@@ -43,7 +50,7 @@ class CronService {
             }
 
             // Group subscriptions by user
-            const userSubscriptions = subscriptionsRenewingTomorrow.reduce((acc, subscription) => {
+            const userSubscriptions = subscriptionsRenewingTomorrow.reduce((acc: UserSubscriptions, subscription) => {
                 const userId = subscription.userId;
                 if (!acc[userId]) {
                     acc[userId] = {
@@ -53,7 +60,7 @@ class CronService {
                 }
                 acc[userId].subscriptions.push(subscription);
                 return acc;
-            }, {});
+            }, {} as UserSubscriptions);
 
             // Send emails to each user
             const emailPromises = Object.values(userSubscriptions).map(async ({ user, subscriptions }) => {
