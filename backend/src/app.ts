@@ -3,11 +3,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 // Import routes
-import authRoutes from './routes/auth.js';
-import subscriptionRoutes from './routes/subscriptions.js';
+// Import routes
+import authRoutes from './routes/auth';
+import subscriptionRoutes from './routes/subscriptions';
 
 // Import services
-import cronService from './services/cronService.js';
+import cronService from './services/cronService';
 
 const app = express();
 
@@ -25,12 +26,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req: express.Request, res: express.Response) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error(err.stack);
     res.status(500).json({
         error: 'Something went wrong!',
@@ -39,7 +40,7 @@ app.use((err, req, res, next) => {
 });
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use('*', (req: express.Request, res: express.Response) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
