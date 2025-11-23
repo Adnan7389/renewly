@@ -1,11 +1,12 @@
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getSubscriptions = async (req, res) => {
+export const getSubscriptions = async (req: Request, res: Response) => {
     try {
         const subscriptions = await prisma.subscription.findMany({
-            where: { userId: req.user.userId },
+            where: { userId: (req as any).user.userId },
             orderBy: { renewalDate: 'asc' },
         });
 
@@ -16,7 +17,7 @@ export const getSubscriptions = async (req, res) => {
     }
 };
 
-export const createSubscription = async (req, res) => {
+export const createSubscription = async (req: Request, res: Response) => {
     try {
         const { name, cost, renewalDate, frequency, description } = req.body;
 
@@ -33,7 +34,7 @@ export const createSubscription = async (req, res) => {
                 renewalDate: new Date(renewalDate),
                 frequency,
                 description,
-                userId: req.user.userId,
+                userId: (req as any).user.userId,
             },
         });
 
@@ -44,14 +45,14 @@ export const createSubscription = async (req, res) => {
     }
 };
 
-export const updateSubscription = async (req, res) => {
+export const updateSubscription = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const { name, cost, renewalDate, frequency, description } = req.body;
 
         // Check if subscription belongs to user
         const existingSubscription = await prisma.subscription.findFirst({
-            where: { id, userId: req.user.userId },
+            where: { id, userId: (req as any).user.userId },
         });
 
         if (!existingSubscription) {
@@ -76,13 +77,13 @@ export const updateSubscription = async (req, res) => {
     }
 };
 
-export const deleteSubscription = async (req, res) => {
+export const deleteSubscription = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
 
         // Check if subscription belongs to user
         const existingSubscription = await prisma.subscription.findFirst({
-            where: { id, userId: req.user.userId },
+            where: { id, userId: (req as any).user.userId },
         });
 
         if (!existingSubscription) {
