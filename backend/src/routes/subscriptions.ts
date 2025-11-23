@@ -1,11 +1,11 @@
 import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateToken } from '../middleware/auth';
 import {
     getSubscriptions,
     createSubscription,
     updateSubscription,
     deleteSubscription,
-} from '../controllers/subscriptionController.js';
+} from '../controllers/subscriptionController';
 
 const router = express.Router();
 
