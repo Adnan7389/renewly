@@ -1,10 +1,13 @@
 import nodemailer from 'nodemailer';
+import { Subscription } from '@prisma/client';
 
 class EmailService {
+  private transporter: nodemailer.Transporter;
+
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      port: Number(process.env.SMTP_PORT),
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -12,7 +15,7 @@ class EmailService {
     });
   }
 
-  async sendRenewalReminder(userEmail, userName, subscriptions) {
+  async sendRenewalReminder(userEmail: string, userName: string, subscriptions: Subscription[]) {
     try {
       const subject = `Renewly: ${subscriptions.length} subscription${subscriptions.length > 1 ? 's' : ''} renewing tomorrow`;
 
@@ -34,7 +37,7 @@ class EmailService {
     }
   }
 
-  generateReminderEmail(userName, subscriptions) {
+  generateReminderEmail(userName: string, subscriptions: Subscription[]) {
     const totalCost = subscriptions.reduce((sum, sub) => sum + sub.cost, 0);
 
     const subscriptionList = subscriptions
