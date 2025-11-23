@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SubscriptionFrequency } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -21,7 +21,7 @@ async function main() {
             name: 'Netflix',
             cost: 15.99,
             renewalDate: new Date('2024-12-28'),
-            frequency: 'MONTHLY',
+            frequency: SubscriptionFrequency.MONTHLY,
             description: 'Streaming service',
             userId: user.id,
         },
@@ -29,7 +29,7 @@ async function main() {
             name: 'Spotify',
             cost: 9.99,
             renewalDate: new Date('2024-12-25'),
-            frequency: 'MONTHLY',
+            frequency: SubscriptionFrequency.MONTHLY,
             description: 'Music streaming',
             userId: user.id,
         },
@@ -37,7 +37,7 @@ async function main() {
             name: 'Adobe Creative Cloud',
             cost: 52.99,
             renewalDate: new Date('2025-01-15'),
-            frequency: 'MONTHLY',
+            frequency: SubscriptionFrequency.MONTHLY,
             description: 'Design software suite',
             userId: user.id,
         },
