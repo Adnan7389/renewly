@@ -1,10 +1,11 @@
 import bcrypt from 'bcryptjs';
+import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 
 const prisma = new PrismaClient();
 
-export const register = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
     try {
         const { email, name, password } = req.body;
 
@@ -46,7 +47,7 @@ export const register = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
@@ -95,7 +96,7 @@ export const login = async (req, res) => {
     }
 };
 
-export const refresh = async (req, res) => {
+export const refresh = async (req: Request, res: Response) => {
     try {
         const { refreshToken } = req.body;
 
@@ -104,7 +105,7 @@ export const refresh = async (req, res) => {
         }
 
         // Verify refresh token
-        const decoded = verifyRefreshToken(refreshToken);
+        const decoded = verifyRefreshToken(refreshToken) as any;
 
         // Check if token exists in database
         const storedToken = await prisma.refreshToken.findUnique({
@@ -127,7 +128,7 @@ export const refresh = async (req, res) => {
     }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req: Request, res: Response) => {
     try {
         const { refreshToken } = req.body;
 
