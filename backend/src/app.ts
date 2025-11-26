@@ -44,7 +44,8 @@ app.use('*', (req: express.Request, res: express.Response) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-// Start cron service
+// Start cron services
+cronService.startRenewalUpdateCron();
 cronService.startDailyEmailCron();
 
 export default app;
