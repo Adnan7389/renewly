@@ -3,9 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 // Import routes
-// Import routes
 import authRoutes from './routes/auth';
 import subscriptionRoutes from './routes/subscriptions';
+import userRoutes from './routes/users';
 
 // Import services
 import cronService from './services/cronService';
@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check
 app.get('/api/health', (req: express.Request, res: express.Response) => {
