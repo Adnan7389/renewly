@@ -12,6 +12,7 @@ model User {
   email         String         @unique
   name          String
   password      String
+  reminderDays  Int            @default(1)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   subscriptions Subscription[]
