@@ -92,7 +92,7 @@ function AddSubscription() {
             };
 
             if (isEditing) {
-                await api.updateSubscription(Number(id), subscriptionData);
+                await api.updateSubscription(id!, subscriptionData);
             } else {
                 await api.createSubscription(subscriptionData);
             }
