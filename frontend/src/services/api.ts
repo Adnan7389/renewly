@@ -5,6 +5,7 @@ import type {
     AuthResponse,
     Subscription
 } from '../types';
+import type { UserPreferences } from '../types/preferences';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
@@ -138,7 +139,7 @@ class ApiService {
      * Update an existing subscription
      * Note: Accepts any type because backend expects different field names
      */
-    async updateSubscription(id: number, subscriptionData: any): Promise<Subscription> {
+    async updateSubscription(id: string, subscriptionData: any): Promise<Subscription> {
         const response = await this.api.put<Subscription>(`/subscriptions/${id}`, subscriptionData);
         return response.data;
     }
@@ -148,6 +149,24 @@ class ApiService {
      */
     async deleteSubscription(id: string): Promise<void> {
         await this.api.delete(`/subscriptions/${id}`);
+    }
+
+    // ==================== User Preferences Methods ====================
+
+    /**
+     * Get user notification preferences
+     */
+    async getPreferences(): Promise<UserPreferences> {
+        const response = await this.api.get<UserPreferences>('/users/preferences');
+        return response.data;
+    }
+
+    /**
+     * Update user notification preferences
+     */
+    async updatePreferences(reminderDays: number): Promise<UserPreferences> {
+        const response = await this.api.put<UserPreferences>('/users/preferences', { reminderDays });
+        return response.data;
     }
 
     // ==================== Generic Methods ====================
