@@ -4,6 +4,7 @@ import Login from './pages/Login.tsx';
 import Register from './pages/Register.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import AddSubscription from './pages/AddSubscription.tsx';
+import Settings from './pages/Settings.tsx';
 import Navbar from './components/Navbar.tsx';
 import { api } from './services/api';
 import type { AuthResponse } from './types';
@@ -114,6 +115,10 @@ function App() {
                     <Route
                         path="/edit-subscription/:id"
                         element={user ? <AddSubscription /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                        path="/settings"
+                        element={user ? <Settings /> : <Navigate to="/login" />}
                     />
                     <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
                 </Routes>
