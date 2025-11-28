@@ -151,6 +151,30 @@ class ApiService {
         await this.api.delete(`/subscriptions/${id}`);
     }
 
+    // ==================== Category Methods ====================
+
+    async getCategories(): Promise<any[]> {
+        const response = await this.api.get('/categories');
+        return response.data;
+    }
+
+    async createCategory(data: { name: string; color?: string }): Promise<any> {
+        const response = await this.api.post('/categories', data);
+        return response.data;
+    }
+
+    // ==================== Tag Methods ====================
+
+    async getTags(): Promise<any[]> {
+        const response = await this.api.get('/tags');
+        return response.data;
+    }
+
+    async createTag(data: { name: string }): Promise<any> {
+        const response = await this.api.post('/tags', data);
+        return response.data;
+    }
+
     // ==================== User Preferences Methods ====================
 
     /**
