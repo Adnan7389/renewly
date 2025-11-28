@@ -5,6 +5,8 @@ import helmet from 'helmet';
 // Import routes
 import authRoutes from './routes/auth';
 import subscriptionRoutes from './routes/subscriptions';
+import categoryRoutes from './routes/categories';
+import tagRoutes from './routes/tags';
 import userRoutes from './routes/users';
 
 // Import services
@@ -24,6 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/tags', tagRoutes);
 app.use('/api/users', userRoutes);
 
 // Health check
