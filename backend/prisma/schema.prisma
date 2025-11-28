@@ -16,6 +16,8 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   subscriptions Subscription[]
+  categories    Category[]
+  tags          Tag[]
   refreshTokens RefreshToken[]
 
   @@map("users")
@@ -31,10 +33,43 @@ model Subscription {
   description     String?
   userId          String
   user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  categoryId      String?
+  category        Category?         @relation(fields: [categoryId], references: [id])
+  
+  tags            Tag[]
+
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
   @@map("subscriptions")
+}
+
+model Category {
+  id        String         @id @default(cuid())
+  name      String
+  color     String?        @default("#3B82F6") // Default blue
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([userId, name])
+  @@map("categories")
+}
+
+model Tag {
+  id        String         @id @default(cuid())
+  name      String
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([userId, name])
+  @@map("tags")
 }
 
 model RefreshToken {
