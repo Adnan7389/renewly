@@ -9,6 +9,19 @@
  * - description (not category)
  */
 
+export interface Category {
+    id: string;
+    name: string;
+    color: string | null;
+    userId: string;
+}
+
+export interface Tag {
+    id: string;
+    name: string;
+    userId: string;
+}
+
 export interface Subscription {
     id: string;              // Prisma uses cuid() which returns string
     name: string;
@@ -18,6 +31,11 @@ export interface Subscription {
     frequency: SubscriptionFrequency;  // Actual Prisma field name
     description: string | null;        // Actual Prisma field name (optional)
     userId: string;          // Prisma uses string for user ID
+
+    categoryId: string | null;
+    category?: Category;
+    tags?: Tag[];
+
     createdAt: string;       // ISO date string from backend
     updatedAt: string;       // ISO date string from backend
 }
@@ -40,6 +58,8 @@ export interface CreateSubscriptionData {
     renewalDate: string;     // ISO date string
     frequency: SubscriptionFrequency;
     description?: string;
+    categoryId?: string;
+    tags?: string[];         // Array of Tag IDs
 }
 
 /**
@@ -52,4 +72,6 @@ export interface UpdateSubscriptionData {
     renewalDate?: string;
     frequency?: SubscriptionFrequency;
     description?: string;
+    categoryId?: string;
+    tags?: string[];         // Array of Tag IDs
 }

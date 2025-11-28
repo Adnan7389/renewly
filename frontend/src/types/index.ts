@@ -11,6 +11,8 @@ export type {
     SubscriptionFrequency,
     BillingCycle,
     CreateSubscriptionData,
-    UpdateSubscriptionData
+    UpdateSubscriptionData,
+    Category,
+    Tag
 } from './subscription';
 export type { ApiError, ApiResponse, TypedAxiosError } from './api';
