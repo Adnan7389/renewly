@@ -41,6 +41,15 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
         }
     };
 
+    const getCategoryStyle = (color: string | null) => {
+        if (!color) return { backgroundColor: '#E5E7EB', color: '#374151' };
+        return {
+            backgroundColor: `${color}20`, // 20% opacity
+            color: color,
+            borderColor: `${color}40`
+        };
+    };
+
     // Use the correct Prisma field names
     const renewalDate = subscription.renewalDate;
     const cost = subscription.cost;
@@ -57,9 +66,28 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
             }`}>
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{subscription.name}</h3>
+                    <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900">{subscription.name}</h3>
+                        {subscription.category && (
+                            <span
+                                className="px-2 py-0.5 rounded-full text-xs font-medium border"
+                                style={getCategoryStyle(subscription.category.color)}
+                            >
+                                {subscription.category.name}
+                            </span>
+                        )}
+                    </div>
                     {subscription.description && (
                         <p className="text-sm text-gray-600 mt-1">{subscription.description}</p>
+                    )}
+                    {subscription.tags && subscription.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                            {subscription.tags.map(tag => (
+                                <span key={tag.id} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                                    {tag.name}
+                                </span>
+                            ))}
+                        </div>
                     )}
                 </div>
                 <div className="flex space-x-2">
