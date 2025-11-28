@@ -7,6 +7,10 @@ export const getSubscriptions = async (req: Request, res: Response) => {
     try {
         const subscriptions = await prisma.subscription.findMany({
             where: { userId: (req as any).user.userId },
+            include: {
+                category: true,
+                tags: true,
+            },
             orderBy: { renewalDate: 'asc' },
         });
 
@@ -19,7 +23,7 @@ export const getSubscriptions = async (req: Request, res: Response) => {
 
 export const createSubscription = async (req: Request, res: Response) => {
     try {
-        const { name, cost, renewalDate, frequency, description } = req.body;
+        const { name, cost, renewalDate, frequency, description, categoryId, tags } = req.body;
 
         if (!name || !cost || !renewalDate || !frequency) {
             return res.status(400).json({
@@ -35,6 +39,14 @@ export const createSubscription = async (req: Request, res: Response) => {
                 frequency,
                 description,
                 userId: (req as any).user.userId,
+                categoryId,
+                tags: tags ? {
+                    connect: tags.map((tagId: string) => ({ id: tagId }))
+                } : undefined,
+            },
+            include: {
+                category: true,
+                tags: true,
             },
         });
 
@@ -48,7 +60,7 @@ export const createSubscription = async (req: Request, res: Response) => {
 export const updateSubscription = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, cost, renewalDate, frequency, description } = req.body;
+        const { name, cost, renewalDate, frequency, description, categoryId, tags } = req.body;
 
         // Check if subscription belongs to user
         const existingSubscription = await prisma.subscription.findFirst({
@@ -67,6 +79,14 @@ export const updateSubscription = async (req: Request, res: Response) => {
                 renewalDate: renewalDate ? new Date(renewalDate) : undefined,
                 frequency,
                 description,
+                categoryId,
+                tags: tags ? {
+                    set: tags.map((tagId: string) => ({ id: tagId }))
+                } : undefined,
+            },
+            include: {
+                category: true,
+                tags: true,
             },
         });
 
