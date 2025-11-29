@@ -8,6 +8,7 @@ import subscriptionRoutes from './routes/subscriptions';
 import categoryRoutes from './routes/categories';
 import tagRoutes from './routes/tags';
 import userRoutes from './routes/users';
+import analyticsRoutes from './routes/analytics';
 
 // Import services
 import cronService from './services/cronService';
@@ -29,6 +30,7 @@ app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health check
 app.get('/api/health', (req: express.Request, res: express.Response) => {
