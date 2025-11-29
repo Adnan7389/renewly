@@ -5,6 +5,7 @@ import Register from './pages/Register.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import AddSubscription from './pages/AddSubscription.tsx';
 import Settings from './pages/Settings.tsx';
+import Analytics from './pages/Analytics.tsx';
 import Navbar from './components/Navbar.tsx';
 import { api } from './services/api';
 import type { AuthResponse } from './types';
@@ -119,6 +120,10 @@ function App() {
                     <Route
                         path="/settings"
                         element={user ? <Settings /> : <Navigate to="/login" />}
+                    />
+                    <Route
+                        path="/analytics"
+                        element={user ? <Analytics /> : <Navigate to="/login" />}
                     />
                     <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
                 </Routes>
