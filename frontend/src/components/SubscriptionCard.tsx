@@ -29,15 +29,15 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
     const getFrequencyColor = (frequency: string): string => {
         switch (frequency) {
             case 'WEEKLY':
-                return 'bg-green-100 text-green-800';
+                return 'bg-[var(--success)] text-[var(--success-foreground)]';
             case 'MONTHLY':
-                return 'bg-blue-100 text-blue-800';
+                return 'bg-[var(--secondary)] text-[var(--secondary-foreground)]';
             case 'QUARTERLY':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'bg-[var(--warning)] text-[var(--warning-foreground)]';
             case 'YEARLY':
-                return 'bg-purple-100 text-purple-800';
+                return 'bg-[var(--primary)] text-[var(--primary-foreground)]';
             default:
-                return 'bg-gray-100 text-gray-800';
+                return 'bg-[var(--muted)] text-[var(--muted-foreground)]';
         }
     };
 
@@ -60,14 +60,14 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
     const isOverdue = daysUntilRenewal < 0;
 
     return (
-        <div className={`bg-white rounded-lg shadow-sm border-2 p-6 transition-all hover:shadow-md ${isUpcoming ? 'border-yellow-300 bg-yellow-50' :
-            isOverdue ? 'border-red-300 bg-red-50' :
-                'border-gray-200'
+        <div className={`bg-[var(--card)] rounded-lg shadow-sm border-2 p-6 transition-all hover:shadow-md ${isUpcoming ? 'border-[var(--warning)] bg-[var(--warning)]/10' :
+            isOverdue ? 'border-[var(--destructive)] bg-[var(--destructive)]/10' :
+                'border-[var(--border)]'
             }`}>
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-lg font-semibold text-gray-900">{subscription.name}</h3>
+                        <h3 className="text-lg font-semibold text-[var(--foreground)]">{subscription.name}</h3>
                         {subscription.category && (
                             <span
                                 className="px-2 py-0.5 rounded-full text-xs font-medium border"
@@ -78,12 +78,12 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
                         )}
                     </div>
                     {subscription.description && (
-                        <p className="text-sm text-gray-600 mt-1">{subscription.description}</p>
+                        <p className="text-sm text-[var(--muted-foreground)] mt-1">{subscription.description}</p>
                     )}
                     {subscription.tags && subscription.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                             {subscription.tags.map(tag => (
-                                <span key={tag.id} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
+                                <span key={tag.id} className="text-xs text-[var(--muted-foreground)] bg-[var(--muted)] px-1.5 py-0.5 rounded">
                                     {tag.name}
                                 </span>
                             ))}
@@ -93,13 +93,13 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
                 <div className="flex space-x-2">
                     <Link
                         to={`/edit-subscription/${subscription.id}`}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        className="text-[var(--primary)] hover:brightness-90 text-sm font-medium"
                     >
                         Edit
                     </Link>
                     <button
                         onClick={() => onDelete(subscription.id)}
-                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                        className="text-[var(--destructive)] hover:brightness-90 text-sm font-medium"
                     >
                         Delete
                     </button>
@@ -107,9 +107,9 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
             </div>
 
             <div className="flex justify-between items-center mb-4">
-                <div className="text-2xl font-bold text-gray-900">
+                <div className="text-2xl font-bold text-[var(--foreground)]">
                     ${cost.toFixed(2)}
-                    <span className="text-sm font-normal text-gray-500">
+                    <span className="text-sm font-normal text-[var(--muted-foreground)]">
                         /{formatFrequency(frequency)}
                     </span>
                 </div>
@@ -120,16 +120,16 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
 
             <div className="flex justify-between items-center">
                 <div>
-                    <p className="text-sm text-gray-600">Next renewal</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm text-[var(--muted-foreground)]">Next renewal</p>
+                    <p className="text-sm font-medium text-[var(--foreground)]">
                         {new Date(renewalDate).toLocaleDateString()}
                     </p>
                 </div>
                 <div className="text-right">
-                    <p className="text-sm text-gray-600">Days until renewal</p>
-                    <p className={`text-sm font-medium ${isOverdue ? 'text-red-600' :
-                        isUpcoming ? 'text-yellow-600' :
-                            'text-gray-900'
+                    <p className="text-sm text-[var(--muted-foreground)]">Days until renewal</p>
+                    <p className={`text-sm font-medium ${isOverdue ? 'text-[var(--destructive)]' :
+                        isUpcoming ? 'text-[var(--warning-foreground)]' :
+                            'text-[var(--foreground)]'
                         }`}>
                         {isOverdue ? `${Math.abs(daysUntilRenewal)} days overdue` :
                             daysUntilRenewal === 0 ? 'Today' :
@@ -140,16 +140,16 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
             </div>
 
             {isUpcoming && (
-                <div className="mt-4 p-3 bg-yellow-100 border border-yellow-300 rounded-md">
-                    <p className="text-sm text-yellow-800">
+                <div className="mt-4 p-3 bg-[var(--warning)]/10 border border-[var(--warning)] rounded-md">
+                    <p className="text-sm text-[var(--warning-foreground)]">
                         ⚠️ This subscription is renewing soon!
                     </p>
                 </div>
             )}
 
             {isOverdue && (
-                <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
-                    <p className="text-sm text-red-800">
+                <div className="mt-4 p-3 bg-[var(--destructive)]/10 border border-[var(--destructive)] rounded-md">
+                    <p className="text-sm text-[var(--destructive-foreground)]">
                         🚨 This subscription renewal date has passed!
                     </p>
                 </div>
