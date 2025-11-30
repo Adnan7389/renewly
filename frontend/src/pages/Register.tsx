@@ -72,20 +72,20 @@ function Register({ onLogin }: RegisterProps) {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-[var(--background)] py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div>
                     <div className="flex justify-center">
                         <span className="text-4xl">🔔</span>
                     </div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-[var(--foreground)]">
                         Create your account
                     </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    <p className="mt-2 text-center text-sm text-[var(--muted-foreground)]">
                         Or{' '}
                         <Link
                             to="/login"
-                            className="font-medium text-primary-600 hover:text-primary-500"
+                            className="font-medium text-[var(--primary)] hover:brightness-90"
                         >
                             sign in to your existing account
                         </Link>
@@ -94,14 +94,14 @@ function Register({ onLogin }: RegisterProps) {
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md">
+                        <div className="bg-[var(--destructive)] border border-[var(--destructive)] text-[var(--destructive-foreground)] px-4 py-3 rounded-md">
                             {error}
                         </div>
                     )}
 
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="name" className="block text-sm font-medium text-[var(--foreground)]">
                                 Full Name
                             </label>
                             <input
