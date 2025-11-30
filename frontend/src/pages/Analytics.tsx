@@ -110,10 +110,10 @@ const Analytics: React.FC = () => {
         <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Analytics & Insights</h1>
-                    <p className="text-gray-500 mt-1">Track your spending patterns and subscription habits</p>
+                    <h1 className="text-2xl font-bold text-[var(--foreground)]">Analytics & Insights</h1>
+                    <p className="text-[var(--muted-foreground)] mt-1">Track your spending patterns and subscription habits</p>
                 </div>
-                <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+                <div className="text-sm text-[var(--muted-foreground)] bg-[var(--card)] px-4 py-2 rounded-lg border border-[var(--border)] shadow-sm">
                     Last updated: {new Date().toLocaleTimeString()}
                 </div>
             </div>
