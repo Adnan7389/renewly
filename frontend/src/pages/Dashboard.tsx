@@ -98,7 +98,7 @@ function Dashboard() {
         return (
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)]"></div>
                 </div>
             </div>
         );
@@ -107,34 +107,34 @@ function Dashboard() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {error && (
-                <div className="mb-6 bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md">
+                <div className="mb-6 bg-[var(--destructive)] border border-[var(--destructive)] text-[var(--destructive-foreground)] px-4 py-3 rounded-md">
                     {error}
                 </div>
             )}
 
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="mt-2 text-gray-600">Manage your subscription renewals</p>
+                <h1 className="text-3xl font-bold text-[var(--foreground)]">Dashboard</h1>
+                <p className="mt-2 text-[var(--muted-foreground)]">Manage your subscription renewals</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Total Subscriptions</h3>
-                    <p className="text-3xl font-bold text-primary-600 mt-2">{subscriptions.length}</p>
+                <div className="bg-[var(--card)] p-6 rounded-lg shadow-sm border border-[var(--border)]">
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Total Subscriptions</h3>
+                    <p className="text-3xl font-bold text-[var(--primary)] mt-2">{subscriptions.length}</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Monthly Cost</h3>
-                    <p className="text-3xl font-bold text-green-600 mt-2">
+                <div className="bg-[var(--card)] p-6 rounded-lg shadow-sm border border-[var(--border)]">
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Monthly Cost</h3>
+                    <p className="text-3xl font-bold text-[var(--success)] mt-2">
                         ${totalMonthlyCost.toFixed(2)}
                     </p>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Upcoming Renewals</h3>
-                    <p className="text-3xl font-bold text-yellow-600 mt-2">
+                <div className="bg-[var(--card)] p-6 rounded-lg shadow-sm border border-[var(--border)]">
+                    <h3 className="text-lg font-medium text-[var(--foreground)]">Upcoming Renewals</h3>
+                    <p className="text-3xl font-bold text-[var(--warning)] mt-2">
                         {upcomingSubscriptions.length}
                     </p>
                 </div>
@@ -142,16 +142,16 @@ function Dashboard() {
 
             {/* Upcoming Renewals Alert */}
             {upcomingSubscriptions.length > 0 && (
-                <div className="mb-8 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <div className="mb-8 bg-[var(--warning)]/10 border-l-4 border-[var(--warning)] p-4">
                     <div className="flex">
                         <div className="flex-shrink-0">
-                            <span className="text-yellow-400 text-xl">⚠️</span>
+                            <span className="text-[var(--warning)] text-xl">⚠️</span>
                         </div>
                         <div className="ml-3">
-                            <h3 className="text-sm font-medium text-yellow-800">
+                            <h3 className="text-sm font-medium text-[var(--warning-foreground)]">
                                 Upcoming Renewals
                             </h3>
-                            <div className="mt-2 text-sm text-yellow-700">
+                            <div className="mt-2 text-sm text-[var(--warning-foreground)] opacity-90">
                                 <p>
                                     You have {upcomingSubscriptions.length} subscription{upcomingSubscriptions.length > 1 ? 's' : ''}
                                     renewing in the next 3 days.
@@ -164,7 +164,7 @@ function Dashboard() {
 
             {/* Subscriptions */}
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Your Subscriptions</h2>
+                <h2 className="text-2xl font-bold text-[var(--foreground)]">Your Subscriptions</h2>
                 <Link
                     to="/add-subscription"
                     className="btn-primary"
@@ -176,8 +176,8 @@ function Dashboard() {
             {subscriptions.length === 0 ? (
                 <div className="text-center py-12">
                     <div className="text-6xl mb-4">📋</div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No subscriptions yet</h3>
-                    <p className="text-gray-600 mb-6">Start tracking your subscriptions to get renewal reminders.</p>
+                    <h3 className="text-lg font-medium text-[var(--foreground)] mb-2">No subscriptions yet</h3>
+                    <p className="text-[var(--muted-foreground)] mb-6">Start tracking your subscriptions to get renewal reminders.</p>
                     <Link
                         to="/add-subscription"
                         className="btn-primary"
@@ -203,7 +203,7 @@ function Dashboard() {
                 onClose={closeDeleteModal}
                 title="Delete Subscription"
             >
-                <p className="text-gray-700 mb-6">
+                <p className="text-[var(--foreground)] mb-6">
                     Are you sure you want to delete this subscription? This action cannot be undone.
                 </p>
                 <div className="flex justify-end space-x-3">
@@ -215,7 +215,7 @@ function Dashboard() {
                     </button>
                     <button
                         onClick={() => handleDeleteSubscription(deleteModal.subscriptionId!)}
-                        className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                        className="btn-destructive"
                     >
                         Delete
                     </button>
