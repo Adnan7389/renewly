@@ -47,7 +47,7 @@ function Settings() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)]"></div>
             </div>
         );
     }
@@ -56,34 +56,34 @@ function Settings() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="md:flex md:items-center md:justify-between mb-8">
                 <div className="flex-1 min-w-0">
-                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    <h2 className="text-2xl font-bold leading-7 text-[var(--foreground)] sm:text-3xl sm:truncate">
                         Settings
                     </h2>
                 </div>
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg max-w-2xl">
+            <div className="bg-[var(--card)] shadow overflow-hidden sm:rounded-lg max-w-2xl border border-[var(--border)]">
                 <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-lg leading-6 font-medium text-[var(--foreground)]">
                         Notification Preferences
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    <p className="mt-1 max-w-2xl text-sm text-[var(--muted-foreground)]">
                         Customize when you receive subscription renewal reminders.
                     </p>
                 </div>
-                <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
+                <div className="border-t border-[var(--border)] px-4 py-5 sm:p-6">
                     {message && (
-                        <div className={`mb-4 p-4 rounded-md ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                        <div className={`mb-4 p-4 rounded-md ${message.type === 'success' ? 'bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20' : 'bg-[var(--destructive)]/10 text-[var(--destructive)] border border-[var(--destructive)]/20'
                             }`}>
                             {message.text}
                         </div>
                     )}
 
                     <div className="space-y-4">
-                        <label className="text-base font-medium text-gray-900">
+                        <label className="text-base font-medium text-[var(--foreground)]">
                             When should we remind you?
                         </label>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-[var(--muted-foreground)]">
                             Select how many days in advance you want to be notified before a subscription renews.
                         </p>
 
@@ -96,11 +96,11 @@ function Settings() {
                                         type="radio"
                                         checked={reminderDays === option.value}
                                         onChange={() => setReminderDays(option.value)}
-                                        className="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300"
+                                        className="focus:ring-[var(--ring)] h-4 w-4 text-[var(--primary)] border-[var(--input)] bg-[var(--background)]"
                                     />
                                     <label
                                         htmlFor={`reminder-${option.value}`}
-                                        className="ml-3 block text-sm font-medium text-gray-700"
+                                        className="ml-3 block text-sm font-medium text-[var(--foreground)]"
                                     >
                                         {option.label}
                                     </label>
@@ -114,8 +114,7 @@ function Settings() {
                             type="button"
                             onClick={handleSave}
                             disabled={saving}
-                            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${saving ? 'opacity-75 cursor-not-allowed' : ''
-                                }`}
+                            className={`btn-primary ${saving ? 'opacity-75 cursor-not-allowed' : ''}`}
                         >
                             {saving ? 'Saving...' : 'Save Preferences'}
                         </button>
