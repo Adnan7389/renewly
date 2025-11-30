@@ -170,26 +170,26 @@ function AddSubscription() {
 
     return (
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="bg-white shadow-sm rounded-lg">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h1 className="text-2xl font-bold text-gray-900">
+            <div className="bg-[var(--card)] shadow-sm rounded-lg border border-[var(--border)]">
+                <div className="px-6 py-4 border-b border-[var(--border)]">
+                    <h1 className="text-2xl font-bold text-[var(--foreground)]">
                         {isEditing ? 'Edit Subscription' : 'Add New Subscription'}
                     </h1>
-                    <p className="mt-2 text-gray-600">
+                    <p className="mt-2 text-[var(--muted-foreground)]">
                         {isEditing ? 'Update your subscription details' : 'Track a new subscription renewal'}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     {error && (
-                        <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md">
+                        <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/20 text-[var(--destructive)] px-4 py-3 rounded-md">
                             {error}
                         </div>
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="name" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Service Name *
                             </label>
                             <input
@@ -205,7 +205,7 @@ function AddSubscription() {
                         </div>
 
                         <div>
-                            <label htmlFor="cost" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="cost" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Cost ($) *
                             </label>
                             <input
@@ -225,7 +225,7 @@ function AddSubscription() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="renewalDate" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="renewalDate" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Next Renewal Date *
                             </label>
                             <input
@@ -240,7 +240,7 @@ function AddSubscription() {
                         </div>
 
                         <div>
-                            <label htmlFor="frequency" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="frequency" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Billing Frequency *
                             </label>
                             <select
@@ -261,7 +261,7 @@ function AddSubscription() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="category" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Category
                             </label>
                             {!showNewCategoryInput ? (
@@ -300,14 +300,14 @@ function AddSubscription() {
                                     <button
                                         type="button"
                                         onClick={handleCreateCategory}
-                                        className="bg-primary-600 text-white px-3 py-2 rounded-md hover:bg-primary-700"
+                                        className="btn-primary"
                                     >
                                         Add
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setShowNewCategoryInput(false)}
-                                        className="text-gray-500 hover:text-gray-700 px-2"
+                                        className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] px-2"
                                     >
                                         ✕
                                     </button>
@@ -316,7 +316,7 @@ function AddSubscription() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[var(--foreground)] mb-2">
                                 Tags
                             </label>
                             <div className="space-y-3">
@@ -327,8 +327,8 @@ function AddSubscription() {
                                             type="button"
                                             onClick={() => toggleTag(tag.id)}
                                             className={`px-3 py-1 rounded-full text-sm transition-colors ${formData.tags.includes(tag.id)
-                                                    ? 'bg-primary-100 text-primary-800 border-primary-200 border'
-                                                    : 'bg-gray-100 text-gray-600 border-gray-200 border hover:bg-gray-200'
+                                                ? 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20 border'
+                                                : 'bg-[var(--muted)] text-[var(--muted-foreground)] border-[var(--border)] border hover:bg-[var(--muted)]/80'
                                                 }`}
                                         >
                                             {tag.name}
@@ -362,7 +362,7 @@ function AddSubscription() {
                     </div>
 
                     <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="description" className="block text-sm font-medium text-[var(--foreground)] mb-2">
                             Description (Optional)
                         </label>
                         <textarea
@@ -376,7 +376,7 @@ function AddSubscription() {
                         />
                     </div>
 
-                    <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                    <div className="flex justify-end space-x-3 pt-6 border-t border-[var(--border)]">
                         <button
                             type="button"
                             onClick={() => navigate('/dashboard')}
