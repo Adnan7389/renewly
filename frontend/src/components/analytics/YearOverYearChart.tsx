@@ -122,15 +122,15 @@ const YearOverYearChart: React.FC<YearOverYearChartProps> = ({
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-[var(--card)] p-6 rounded-xl shadow-sm border border-[var(--border)]">
             <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Year over Year Comparison</h3>
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">Year over Year Comparison</h3>
             </div>
 
             <div className="h-[300px] w-full">
                 {isLoading ? (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-50 rounded-lg animate-pulse">
-                        <div className="text-gray-400">Loading comparison data...</div>
+                    <div className="h-full w-full flex items-center justify-center bg-[var(--muted)] rounded-lg animate-pulse">
+                        <div className="text-[var(--muted-foreground)]">Loading comparison data...</div>
                     </div>
                 ) : (
                     <Bar options={options as any} data={chartData} />
