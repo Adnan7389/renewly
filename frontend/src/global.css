@@ -76,6 +76,11 @@
 	--success: var(--dark-600);
 	--success-foreground: var(--dark-200);
 
+	--warning: oklch(0.8 0.14 85);
+	--warning-foreground: oklch(0.35 0.08 75);
+
+
+
 	--destructive: oklch(67.16% 0.1686 20.151);
 	--destructive-foreground: oklch(21.723% 0.08109 23.735);
 
@@ -124,6 +129,11 @@
 	--destructive: oklch(27.719% 0.10473 26.958);
 	--destructive-foreground: oklch(80.643% 0.10096 16.423);
 
+	--warning: oklch(0.75 0.15 75);
+	--warning-foreground: oklch(0.95 0.05 75);
+
+
+
 	--border: var(--dark-500);
 	--input: var(--dark-1000);
 	--ring: var(--dark-400);
@@ -151,6 +161,10 @@
 
 	.btn-secondary {
 		@apply bg-[var(--secondary)] hover:brightness-95 text-[var(--secondary-foreground)] font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2;
+	}
+
+	.btn-destructive {
+		@apply bg-[var(--destructive)] hover:brightness-90 text-[var(--destructive-foreground)] font-medium py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-2;
 	}
 
 	.input-field {
