@@ -113,26 +113,26 @@ const CategoryBreakdownChart: React.FC<CategoryBreakdownChartProps> = ({
     }, [categories, uncategorized]);
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Spending by Category</h3>
+        <div className="bg-[var(--card)] p-6 rounded-xl shadow-sm border border-[var(--border)]">
+            <h3 className="text-lg font-semibold text-[var(--foreground)] mb-6">Spending by Category</h3>
 
             <div className="flex flex-col md:flex-row items-center gap-8">
                 <div className="relative h-[240px] w-[240px] flex-shrink-0">
                     {isLoading ? (
-                        <div className="h-full w-full rounded-full border-8 border-gray-100 animate-pulse" />
+                        <div className="h-full w-full rounded-full border-8 border-[var(--muted)] animate-pulse" />
                     ) : totalMonthly > 0 ? (
                         <>
                             <Doughnut options={options} data={chartData} />
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-sm text-gray-500">Total</span>
-                                <span className="text-2xl font-bold text-gray-900">
+                                <span className="text-sm text-[var(--muted-foreground)]">Total</span>
+                                <span className="text-2xl font-bold text-[var(--foreground)]">
                                     ${totalMonthly.toFixed(0)}
                                 </span>
                             </div>
                         </>
                     ) : (
-                        <div className="h-full w-full rounded-full border-8 border-gray-100 flex items-center justify-center">
-                            <span className="text-gray-400 text-sm">No data</span>
+                        <div className="h-full w-full rounded-full border-8 border-[var(--muted)] flex items-center justify-center">
+                            <span className="text-[var(--muted-foreground)] text-sm">No data</span>
                         </div>
                     )}
                 </div>
@@ -141,7 +141,7 @@ const CategoryBreakdownChart: React.FC<CategoryBreakdownChartProps> = ({
                     {isLoading ? (
                         <div className="space-y-3">
                             {[1, 2, 3].map(i => (
-                                <div key={i} className="h-8 bg-gray-50 rounded animate-pulse" />
+                                <div key={i} className="h-8 bg-[var(--muted)] rounded animate-pulse" />
                             ))}
                         </div>
                     ) : (
@@ -153,15 +153,15 @@ const CategoryBreakdownChart: React.FC<CategoryBreakdownChartProps> = ({
                                             className="w-3 h-3 rounded-full"
                                             style={{ backgroundColor: item.color }}
                                         />
-                                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                                        <span className="text-sm font-medium text-[var(--muted-foreground)] group-hover:text-[var(--foreground)]">
                                             {item.name}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm font-semibold text-gray-900">
+                                        <span className="text-sm font-semibold text-[var(--foreground)]">
                                             ${item.amount.toFixed(2)}
                                         </span>
-                                        <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full min-w-[40px] text-center">
+                                        <span className="text-xs font-medium text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded-full min-w-[40px] text-center">
                                             {item.percentage}%
                                         </span>
                                     </div>
