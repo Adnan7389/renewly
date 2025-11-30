@@ -7,6 +7,7 @@ import AddSubscription from './pages/AddSubscription.tsx';
 import Settings from './pages/Settings.tsx';
 import Analytics from './pages/Analytics.tsx';
 import Navbar from './components/Navbar.tsx';
+import { DarkModeProvider } from './contexts/DarkModeContext.tsx';
 import { api } from './services/api';
 import type { AuthResponse } from './types';
 
@@ -86,49 +87,51 @@ function App() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[var(--primary)]"></div>
             </div>
         );
     }
 
     return (
-        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <div className="min-h-screen bg-gray-50">
-                {user && <Navbar user={user} onLogout={logout} />}
+        <DarkModeProvider>
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <div className="min-h-screen bg-[var(--background)]">
+                    {user && <Navbar user={user} onLogout={logout} />}
 
-                <Routes>
-                    <Route
-                        path="/login"
-                        element={!user ? <Login onLogin={login} /> : <Navigate to="/dashboard" />}
-                    />
-                    <Route
-                        path="/register"
-                        element={!user ? <Register onLogin={login} /> : <Navigate to="/dashboard" />}
-                    />
-                    <Route
-                        path="/dashboard"
-                        element={user ? <Dashboard /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        path="/add-subscription"
-                        element={user ? <AddSubscription /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        path="/edit-subscription/:id"
-                        element={user ? <AddSubscription /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        path="/settings"
-                        element={user ? <Settings /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        path="/analytics"
-                        element={user ? <Analytics /> : <Navigate to="/login" />}
-                    />
-                    <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
-                </Routes>
-            </div>
-        </Router>
+                    <Routes>
+                        <Route
+                            path="/login"
+                            element={!user ? <Login onLogin={login} /> : <Navigate to="/dashboard" />}
+                        />
+                        <Route
+                            path="/register"
+                            element={!user ? <Register onLogin={login} /> : <Navigate to="/dashboard" />}
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={user ? <Dashboard /> : <Navigate to="/login" />}
+                        />
+                        <Route
+                            path="/add-subscription"
+                            element={user ? <AddSubscription /> : <Navigate to="/login" />}
+                        />
+                        <Route
+                            path="/edit-subscription/:id"
+                            element={user ? <AddSubscription /> : <Navigate to="/login" />}
+                        />
+                        <Route
+                            path="/settings"
+                            element={user ? <Settings /> : <Navigate to="/login" />}
+                        />
+                        <Route
+                            path="/analytics"
+                            element={user ? <Analytics /> : <Navigate to="/login" />}
+                        />
+                        <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+                    </Routes>
+                </div>
+            </Router>
+        </DarkModeProvider>
     );
 }
 
