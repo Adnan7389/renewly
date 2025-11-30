@@ -105,17 +105,17 @@ const SpendingTrendsChart: React.FC<SpendingTrendsChartProps> = ({
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-[var(--card)] p-6 rounded-xl shadow-sm border border-[var(--border)]">
             <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Spending Trends</h3>
-                <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">Spending Trends</h3>
+                <div className="flex space-x-2 bg-[var(--muted)] p-1 rounded-lg">
                     {[6, 12, 24].map((r) => (
                         <button
                             key={r}
                             onClick={() => onRangeChange(r)}
                             className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${range === r
-                                    ? 'bg-white text-gray-900 shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700'
+                                ? 'bg-[var(--card)] text-[var(--foreground)] shadow-sm'
+                                : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                                 }`}
                         >
                             {r} Months
@@ -126,14 +126,14 @@ const SpendingTrendsChart: React.FC<SpendingTrendsChartProps> = ({
 
             <div className="h-[300px] w-full">
                 {isLoading ? (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-50 rounded-lg animate-pulse">
-                        <div className="text-gray-400">Loading chart data...</div>
+                    <div className="h-full w-full flex items-center justify-center bg-[var(--muted)] rounded-lg animate-pulse">
+                        <div className="text-[var(--muted-foreground)]">Loading chart data...</div>
                     </div>
                 ) : data.length > 0 ? (
                     <Line options={options} data={chartData} />
                 ) : (
-                    <div className="h-full w-full flex items-center justify-center bg-gray-50 rounded-lg">
-                        <div className="text-gray-400">No spending data available</div>
+                    <div className="h-full w-full flex items-center justify-center bg-[var(--muted)] rounded-lg">
+                        <div className="text-[var(--muted-foreground)]">No spending data available</div>
                     </div>
                 )}
             </div>
