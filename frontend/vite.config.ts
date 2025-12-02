@@ -7,5 +7,16 @@ export default defineConfig({
     server: {
         port: 5173,
         host: true
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
+                    charts: ['chart.js', 'react-chartjs-2'],
+                    pdf: ['jspdf', 'jspdf-autotable']
+                }
+            }
+        }
     }
 })
