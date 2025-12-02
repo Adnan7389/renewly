@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import ExportButtons from '../components/ExportButtons';
+import type { Subscription } from '../types';
 
 const REMINDER_OPTIONS = [
     { value: 1, label: '1 day before' },
@@ -13,6 +15,7 @@ function Settings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
     useEffect(() => {
         fetchPreferences();
@@ -20,10 +23,14 @@ function Settings() {
 
     const fetchPreferences = async () => {
         try {
-            const prefs = await api.getPreferences();
+            const [prefs, subs] = await Promise.all([
+                api.getPreferences(),
+                api.getSubscriptions()
+            ]);
             setReminderDays(prefs.reminderDays);
+            setSubscriptions(subs);
         } catch (error) {
-            console.error('Failed to fetch preferences:', error);
+            console.error('Failed to fetch data:', error);
             setMessage({ type: 'error', text: 'Failed to load settings' });
         } finally {
             setLoading(false);
@@ -119,6 +126,20 @@ function Settings() {
                             {saving ? 'Saving...' : 'Save Preferences'}
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <div className="mt-8 bg-[var(--card)] shadow overflow-hidden sm:rounded-lg max-w-2xl border border-[var(--border)]">
+                <div className="px-4 py-5 sm:px-6">
+                    <h3 className="text-lg leading-6 font-medium text-[var(--foreground)]">
+                        Data Management
+                    </h3>
+                    <p className="mt-1 max-w-2xl text-sm text-[var(--muted-foreground)]">
+                        Download your subscription data for offline access or backup.
+                    </p>
+                </div>
+                <div className="border-t border-[var(--border)] px-4 py-5 sm:p-6">
+                    <ExportButtons subscriptions={subscriptions} />
                 </div>
             </div>
         </div>
