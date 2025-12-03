@@ -153,8 +153,7 @@ function Dashboard() {
                             </h3>
                             <div className="mt-2 text-sm text-[var(--warning-foreground)] opacity-90">
                                 <p>
-                                    You have {upcomingSubscriptions.length} subscription{upcomingSubscriptions.length > 1 ? 's' : ''}
-                                    renewing in the next 3 days.
+                                    You have {upcomingSubscriptions.length} subscription{upcomingSubscriptions.length > 1 ? 's' : ''} renewing in the next 3 days.
                                 </p>
                             </div>
                         </div>
