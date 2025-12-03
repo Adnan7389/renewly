@@ -7,6 +7,7 @@ import AddSubscription from './pages/AddSubscription.tsx';
 import Settings from './pages/Settings.tsx';
 import Analytics from './pages/Analytics.tsx';
 import Navbar from './components/Navbar.tsx';
+import LandingPage from './pages/LandingPage.tsx';
 import { DarkModeProvider } from './contexts/DarkModeContext.tsx';
 import { api } from './services/api';
 import type { AuthResponse } from './types';
@@ -127,7 +128,7 @@ function App() {
                             path="/analytics"
                             element={user ? <Analytics /> : <Navigate to="/login" />}
                         />
-                        <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+                        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
                     </Routes>
                 </div>
             </Router>
