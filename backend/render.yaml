@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: renewly-backend
+    env: docker
+    plan: free
+    rootDir: backend
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
