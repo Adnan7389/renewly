@@ -7,7 +7,7 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import cronService from '../../services/cronService';
+import { calculateNextFutureRenewalDate } from '../renewalUtils';
 
 const prisma = new PrismaClient();
 
@@ -37,21 +37,21 @@ async function runManualTest() {
             {
                 name: 'Test Monthly Subscription',
                 cost: 9.99,
-                renewalDate: new Date('2024-10-15'), // Past date
+                startDate: new Date('2024-10-15'), // Past date
                 frequency: 'MONTHLY' as const,
                 userId: testUser.id
             },
             {
                 name: 'Test Weekly Subscription',
                 cost: 4.99,
-                renewalDate: new Date('2024-11-01'), // Past date
+                startDate: new Date('2024-11-01'), // Past date
                 frequency: 'WEEKLY' as const,
                 userId: testUser.id
             },
             {
                 name: 'Test Yearly Subscription',
                 cost: 99.99,
-                renewalDate: new Date('2023-11-26'), // Past date (1 year ago)
+                startDate: new Date('2023-11-26'), // Past date (1 year ago)
                 frequency: 'YEARLY' as const,
                 userId: testUser.id
             }
@@ -70,7 +70,7 @@ async function runManualTest() {
         // Create new test subscriptions
         for (const sub of testSubscriptions) {
             await prisma.subscription.create({ data: sub });
-            console.log(`   ✅ Created: ${sub.name} (${sub.frequency}) - ${sub.renewalDate.toISOString().split('T')[0]}`);
+            console.log(`   ✅ Created: ${sub.name} (${sub.frequency}) - ${sub.startDate.toISOString().split('T')[0]}`);
         }
 
         // Step 3: Display subscriptions before update
@@ -81,31 +81,28 @@ async function runManualTest() {
         });
 
         beforeSubs.forEach(sub => {
-            console.log(`   📅 ${sub.name}: ${sub.renewalDate.toISOString().split('T')[0]} (${sub.frequency})`);
+            console.log(`   📅 ${sub.name}: ${sub.startDate.toISOString().split('T')[0]} (${sub.frequency})`);
         });
 
-        // Step 4: Run the renewal update
-        console.log('\n📝 Step 4: Running renewal update job...');
-        console.log('-'.repeat(60));
-        await cronService.updatePastRenewals();
+        // Step 4: The system now calculates renewals dynamically
+        console.log('\n📝 Step 4: Projecting dynamic renewal dates...');
+        console.log('   (No database mutation required, projecting next dates from startDate anchor)');
         console.log('-'.repeat(60));
 
-        // Step 5: Display subscriptions after update
-        console.log('\n📝 Step 5: Subscriptions AFTER renewal update:');
-        const afterSubs = await prisma.subscription.findMany({
-            where: { userId: testUser.id, name: { startsWith: 'Test ' } },
-            orderBy: { name: 'asc' }
-        });
+        const projectedSubs = beforeSubs.map(sub => ({
+            ...sub,
+            nextRenewalDate: calculateNextFutureRenewalDate(sub.startDate, sub.frequency)
+        }));
 
-        afterSubs.forEach(sub => {
-            const isFuture = sub.renewalDate > new Date();
+        projectedSubs.forEach(sub => {
+            const isFuture = sub.nextRenewalDate > new Date();
             const icon = isFuture ? '✅' : '❌';
-            console.log(`   ${icon} ${sub.name}: ${sub.renewalDate.toISOString().split('T')[0]} (${sub.frequency})`);
+            console.log(`   ${icon} ${sub.name}: ${sub.nextRenewalDate.toISOString().split('T')[0]} (${sub.frequency})`);
         });
 
-        // Step 6: Verify all dates are in the future
+        // Step 6: Verify all projected dates are in the future
         console.log('\n📝 Step 6: Verification:');
-        const allFuture = afterSubs.every(sub => sub.renewalDate > new Date());
+        const allFuture = projectedSubs.every(sub => sub.nextRenewalDate > new Date());
 
         if (allFuture) {
             console.log('   ✅ SUCCESS: All renewal dates are now in the future!');
