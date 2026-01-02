@@ -28,7 +28,7 @@ model Subscription {
   name            String
   cost            Float
   currency        String            @default("USD")
-  renewalDate     DateTime
+  startDate       DateTime
   frequency       SubscriptionFrequency
   description     String?
   userId          String
