@@ -20,7 +20,7 @@ async function main() {
         {
             name: 'Netflix',
             cost: 15.99,
-            renewalDate: new Date('2024-12-28'),
+            startDate: new Date('2024-12-28'),
             frequency: SubscriptionFrequency.MONTHLY,
             description: 'Streaming service',
             userId: user.id,
@@ -28,7 +28,7 @@ async function main() {
         {
             name: 'Spotify',
             cost: 9.99,
-            renewalDate: new Date('2024-12-25'),
+            startDate: new Date('2024-12-25'),
             frequency: SubscriptionFrequency.MONTHLY,
             description: 'Music streaming',
             userId: user.id,
@@ -36,7 +36,7 @@ async function main() {
         {
             name: 'Adobe Creative Cloud',
             cost: 52.99,
-            renewalDate: new Date('2025-01-15'),
+            startDate: new Date('2025-01-15'),
             frequency: SubscriptionFrequency.MONTHLY,
             description: 'Design software suite',
             userId: user.id,
