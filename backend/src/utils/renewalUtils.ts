@@ -1,66 +1,53 @@
 import { SubscriptionFrequency } from '@prisma/client';
 
 /**
- * Calculate the next renewal date based on the current renewal date and frequency
- * @param currentDate - The current renewal date
- * @param frequency - The billing frequency (WEEKLY, MONTHLY, QUARTERLY, YEARLY)
- * @returns The next renewal date
+ * Calculate the next renewal date based on the current date and frequency.
+ * This is a one-step advancement.
+ * @param currentDate - The date to advance from
+ * @param frequency - The billing frequency
+ * @returns The next renewal date (1 period later)
  */
 export function calculateNextRenewalDate(
     currentDate: Date,
     frequency: SubscriptionFrequency
 ): Date {
     const nextDate = new Date(currentDate);
+    nextDate.setHours(0, 0, 0, 0);
 
     switch (frequency) {
         case 'WEEKLY':
-            // Add 7 days
             nextDate.setDate(nextDate.getDate() + 7);
             break;
 
-        case 'MONTHLY':
-            // Add 1 month
-            // Handle edge case: if current date is the last day of the month,
-            // the next renewal should be the last day of the next month
-            const currentDay = currentDate.getDate();
+        case 'MONTHLY': {
+            const currentDay = nextDate.getDate();
             nextDate.setMonth(nextDate.getMonth() + 1);
-
-            // If the day changed (e.g., Jan 31 -> Mar 3), set to last day of previous month
+            // Handle end-of-month drift
             if (nextDate.getDate() !== currentDay) {
-                nextDate.setDate(0); // Sets to last day of previous month
-            }
-            break;
-
-        case 'QUARTERLY':
-            // Add 3 months
-            const currentDayQuarterly = currentDate.getDate();
-            nextDate.setMonth(nextDate.getMonth() + 3);
-
-            // Handle month-end edge cases
-            if (nextDate.getDate() !== currentDayQuarterly) {
                 nextDate.setDate(0);
             }
             break;
+        }
 
-        case 'YEARLY':
-            // Add 1 year
-            const currentMonth = currentDate.getMonth();
-            const currentDayYearly = currentDate.getDate();
-
-            nextDate.setFullYear(nextDate.getFullYear() + 1);
-
-            // Handle leap year edge case (Feb 29 -> Feb 28 in non-leap years)
-            if (currentMonth === 1 && currentDayYearly === 29) {
-                // Check if next year is not a leap year
-                const nextYear = nextDate.getFullYear();
-                const isLeapYear = (nextYear % 4 === 0 && nextYear % 100 !== 0) || (nextYear % 400 === 0);
-
-                if (!isLeapYear && nextDate.getDate() !== 29) {
-                    nextDate.setMonth(1); // February
-                    nextDate.setDate(28);
-                }
+        case 'QUARTERLY': {
+            const currentDay = nextDate.getDate();
+            nextDate.setMonth(nextDate.getMonth() + 3);
+            if (nextDate.getDate() !== currentDay) {
+                nextDate.setDate(0);
             }
             break;
+        }
+
+        case 'YEARLY': {
+            const currentMonth = nextDate.getMonth();
+            const currentDay = nextDate.getDate();
+            nextDate.setFullYear(nextDate.getFullYear() + 1);
+            // Handle leap year (Feb 29 -> Feb 28)
+            if (currentMonth === 1 && currentDay === 29 && nextDate.getMonth() !== 1) {
+                nextDate.setDate(0);
+            }
+            break;
+        }
 
         default:
             throw new Error(`Unknown frequency: ${frequency}`);
@@ -70,24 +57,97 @@ export function calculateNextRenewalDate(
 }
 
 /**
- * Calculate the next renewal date by advancing from the current date
- * until it's in the future. Handles cases where multiple periods have passed.
- * @param currentDate - The current renewal date (possibly in the past)
+ * Calculate the next valid renewal date in the future based on an anchor start date.
+ * Avoids iterative loops to prevent date drift.
+ * @param anchorDate - The original start date of the subscription
  * @param frequency - The billing frequency
  * @returns The next renewal date in the future
  */
 export function calculateNextFutureRenewalDate(
-    currentDate: Date,
+    anchorDate: Date,
     frequency: SubscriptionFrequency
 ): Date {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let nextDate = new Date(currentDate);
+    const anchor = new Date(anchorDate);
+    anchor.setHours(0, 0, 0, 0);
 
-    // Keep advancing the renewal date until it's in the future
-    while (nextDate <= today) {
-        nextDate = calculateNextRenewalDate(nextDate, frequency);
+    // If anchor is already in the future, return it
+    if (anchor > today) {
+        return new Date(anchor);
+    }
+
+    let nextDate = new Date(anchor);
+
+    switch (frequency) {
+        case 'WEEKLY': {
+            const daysDiff = Math.floor((today.getTime() - anchor.getTime()) / (1000 * 60 * 60 * 24));
+            const weeksDiff = Math.floor(daysDiff / 7);
+            
+            nextDate.setDate(anchor.getDate() + (weeksDiff * 7));
+            if (nextDate <= today) {
+                nextDate.setDate(nextDate.getDate() + 7);
+            }
+            break;
+        }
+
+        case 'MONTHLY': {
+            const monthsDiff = (today.getFullYear() - anchor.getFullYear()) * 12 + (today.getMonth() - anchor.getMonth());
+            
+            nextDate.setMonth(anchor.getMonth() + monthsDiff);
+            
+            if (nextDate <= today) {
+                nextDate = new Date(anchor);
+                nextDate.setMonth(anchor.getMonth() + monthsDiff + 1);
+            }
+            
+            // Handle end-of-month edge cases (e.g., Jan 31 -> Feb 28)
+            if (nextDate.getDate() !== anchor.getDate()) {
+                nextDate.setDate(0); 
+            }
+            break;
+        }
+
+        case 'QUARTERLY': {
+            const monthsDiff = (today.getFullYear() - anchor.getFullYear()) * 12 + (today.getMonth() - anchor.getMonth());
+            const quartersDiff = Math.floor(monthsDiff / 3);
+            
+            nextDate.setMonth(anchor.getMonth() + (quartersDiff * 3));
+            
+            if (nextDate <= today) {
+                nextDate = new Date(anchor);
+                nextDate.setMonth(anchor.getMonth() + ((quartersDiff + 1) * 3));
+            }
+            
+            // Handle end-of-month edge cases
+            if (nextDate.getDate() !== anchor.getDate()) {
+                nextDate.setDate(0); 
+            }
+            break;
+        }
+
+        case 'YEARLY': {
+            const yearsDiff = today.getFullYear() - anchor.getFullYear();
+            
+            nextDate.setFullYear(anchor.getFullYear() + yearsDiff);
+            
+            if (nextDate <= today) {
+                nextDate = new Date(anchor);
+                nextDate.setFullYear(anchor.getFullYear() + yearsDiff + 1);
+            }
+            
+            // Handle leap year edge case (Feb 29 -> Feb 28 in non-leap years)
+            if (anchor.getMonth() === 1 && anchor.getDate() === 29) {
+                if (nextDate.getMonth() !== 1) {
+                    nextDate.setDate(0); // Sets to Feb 28
+                }
+            }
+            break;
+        }
+
+        default:
+            throw new Error(`Unknown frequency: ${frequency}`);
     }
 
     return nextDate;
