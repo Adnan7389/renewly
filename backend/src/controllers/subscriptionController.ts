@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+import { calculateNextFutureRenewalDate } from '../utils/renewalUtils';
 
 export const getSubscriptions = async (req: Request, res: Response) => {
     try {
@@ -11,10 +12,15 @@ export const getSubscriptions = async (req: Request, res: Response) => {
                 category: true,
                 tags: true,
             },
-            orderBy: { renewalDate: 'asc' },
+            orderBy: { startDate: 'asc' },
         });
 
-        res.json(subscriptions);
+        const mappedSubscriptions = subscriptions.map(sub => ({
+            ...sub,
+            nextRenewalDate: calculateNextFutureRenewalDate(sub.startDate, sub.frequency)
+        }));
+
+        res.json(mappedSubscriptions);
     } catch (error) {
         console.error('Get subscriptions error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -23,11 +29,11 @@ export const getSubscriptions = async (req: Request, res: Response) => {
 
 export const createSubscription = async (req: Request, res: Response) => {
     try {
-        const { name, cost, renewalDate, frequency, description, categoryId, tags } = req.body;
+        const { name, cost, startDate, frequency, description, categoryId, tags } = req.body;
 
-        if (!name || !cost || !renewalDate || !frequency) {
+        if (!name || !cost || !startDate || !frequency) {
             return res.status(400).json({
-                error: 'Name, cost, renewal date, and frequency are required'
+                error: 'Name, cost, start date, and frequency are required'
             });
         }
 
@@ -35,7 +41,7 @@ export const createSubscription = async (req: Request, res: Response) => {
             data: {
                 name,
                 cost: parseFloat(cost),
-                renewalDate: new Date(renewalDate),
+                startDate: new Date(startDate),
                 frequency,
                 description,
                 userId: (req as any).user.userId,
@@ -50,7 +56,12 @@ export const createSubscription = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(201).json(subscription);
+        const mappedSubscription = {
+            ...subscription,
+            nextRenewalDate: calculateNextFutureRenewalDate(subscription.startDate, subscription.frequency)
+        };
+
+        res.status(201).json(mappedSubscription);
     } catch (error) {
         console.error('Create subscription error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -60,7 +71,7 @@ export const createSubscription = async (req: Request, res: Response) => {
 export const updateSubscription = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, cost, renewalDate, frequency, description, categoryId, tags } = req.body;
+        const { name, cost, startDate, frequency, description, categoryId, tags } = req.body;
 
         // Check if subscription belongs to user
         const existingSubscription = await prisma.subscription.findFirst({
@@ -76,7 +87,7 @@ export const updateSubscription = async (req: Request, res: Response) => {
             data: {
                 name,
                 cost: cost ? parseFloat(cost) : undefined,
-                renewalDate: renewalDate ? new Date(renewalDate) : undefined,
+                startDate: startDate ? new Date(startDate) : undefined,
                 frequency,
                 description,
                 categoryId,
@@ -90,7 +101,12 @@ export const updateSubscription = async (req: Request, res: Response) => {
             },
         });
 
-        res.json(subscription);
+        const mappedSubscription = {
+            ...subscription,
+            nextRenewalDate: calculateNextFutureRenewalDate(subscription.startDate, subscription.frequency)
+        };
+
+        res.json(mappedSubscription);
     } catch (error) {
         console.error('Update subscription error:', error);
         res.status(500).json({ error: 'Internal server error' });
