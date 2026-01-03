@@ -52,7 +52,6 @@ app.use('*', (req: express.Request, res: express.Response) => {
 });
 
 // Start cron services
-cronService.startRenewalUpdateCron();
 cronService.startDailyEmailCron();
 
 export default app;
