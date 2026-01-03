@@ -1,6 +1,7 @@
 import { PrismaClient, Subscription, SubscriptionFrequency } from '@prisma/client';
 
 const prisma = new PrismaClient();
+import { calculateNextFutureRenewalDate } from '../utils/renewalUtils';
 
 /**
  * Normalize subscription cost to monthly equivalent
@@ -229,7 +230,7 @@ export const getUpcomingCosts = async (userId: string, days: number = 30) => {
         id: string;
         name: string;
         cost: number;
-        renewalDate: Date;
+        nextRenewalDate: Date;
         daysUntil: number;
         category: string | null;
     }> = [];
@@ -237,7 +238,7 @@ export const getUpcomingCosts = async (userId: string, days: number = 30) => {
     let totalUpcoming = 0;
 
     subscriptions.forEach(sub => {
-        const renewalDate = new Date(sub.renewalDate);
+        const renewalDate = calculateNextFutureRenewalDate(sub.startDate, sub.frequency);
 
         if (renewalDate >= now && renewalDate <= endDate) {
             const daysUntil = Math.ceil((renewalDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -246,7 +247,7 @@ export const getUpcomingCosts = async (userId: string, days: number = 30) => {
                 id: sub.id,
                 name: sub.name,
                 cost: sub.cost,
-                renewalDate: renewalDate,
+                nextRenewalDate: renewalDate,
                 daysUntil,
                 category: sub.category?.name || null,
             });
@@ -256,7 +257,7 @@ export const getUpcomingCosts = async (userId: string, days: number = 30) => {
     });
 
     // Sort by renewal date
-    upcomingRenewals.sort((a, b) => a.renewalDate.getTime() - b.renewalDate.getTime());
+    upcomingRenewals.sort((a, b) => a.nextRenewalDate.getTime() - b.nextRenewalDate.getTime());
 
     return {
         days,
