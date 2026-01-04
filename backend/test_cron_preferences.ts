@@ -32,11 +32,11 @@ async function testCronPreferences() {
                 cost: 9.99,
                 currency: 'USD',
                 frequency: 'MONTHLY',
-                renewalDate: renewalDate,
+                startDate: renewalDate,
                 userId: user.id
             }
         });
-        console.log(`Hz Created subscription renewing on: ${subscription.renewalDate.toISOString().split('T')[0]}`);
+        console.log(`Hz Created subscription renewing on: ${subscription.startDate.toISOString().split('T')[0]}`);
 
         // 3. Run the cron job
         console.log('🚀 Running sendDailyReminders()...');
