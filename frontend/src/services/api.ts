@@ -126,9 +126,10 @@ class ApiService {
 
     /**
      * Create a new subscription
-     * Note: Accepts any type because backend expects different field names
-     * (cost, renewalDate, frequency) than our Prisma schema types
-     * (price, nextBillingDate, billingCycle)
+     * Note: Backend expects current field names:
+     * - cost
+     * - startDate
+     * - frequency
      */
     async createSubscription(subscriptionData: any): Promise<Subscription> {
         const response = await this.api.post<Subscription>('/subscriptions', subscriptionData);
