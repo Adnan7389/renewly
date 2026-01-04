@@ -4,7 +4,8 @@
  * These types define the structure of subscription data.
  * IMPORTANT: These match the ACTUAL Prisma schema field names:
  * - cost (not price)
- * - renewalDate (not nextBillingDate)
+ * - startDate (not renewalDate)
+ * - nextRenewalDate
  * - frequency (not billingCycle)
  * - description (not category)
  */
@@ -27,7 +28,8 @@ export interface Subscription {
     name: string;
     cost: number;            // Actual Prisma field name
     currency: string;
-    renewalDate: string;     // Actual Prisma field name (ISO date string from backend)
+    startDate: string;       // Actual Prisma field name (ISO date string from backend)
+    nextRenewalDate: string; // Dynamically calculated by the backend
     frequency: SubscriptionFrequency;  // Actual Prisma field name
     description: string | null;        // Actual Prisma field name (optional)
     userId: string;          // Prisma uses string for user ID
@@ -55,7 +57,7 @@ export type BillingCycle = SubscriptionFrequency;
 export interface CreateSubscriptionData {
     name: string;
     cost: number;
-    renewalDate: string;     // ISO date string
+    startDate: string;       // ISO date string
     frequency: SubscriptionFrequency;
     description?: string;
     categoryId?: string;
@@ -69,7 +71,7 @@ export interface CreateSubscriptionData {
 export interface UpdateSubscriptionData {
     name?: string;
     cost?: number;
-    renewalDate?: string;
+    startDate?: string;
     frequency?: SubscriptionFrequency;
     description?: string;
     categoryId?: string;
