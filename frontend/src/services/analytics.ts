@@ -64,7 +64,7 @@ export interface UpcomingRenewal {
     id: string;
     name: string;
     cost: number;
-    renewalDate: string;
+    nextRenewalDate: string;
     daysUntil: number;
     category: string | null;
 }
