@@ -22,7 +22,7 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ subscriptions }) => {
             sub.cost,
             sub.currency,
             sub.frequency,
-            new Date(sub.renewalDate).toLocaleDateString(),
+            new Date(sub.nextRenewalDate).toLocaleDateString(),
             sub.category?.name || 'Uncategorized',
             sub.description || ''
         ]);
@@ -63,7 +63,7 @@ const ExportButtons: React.FC<ExportButtonsProps> = ({ subscriptions }) => {
             sub.name,
             `${sub.currency} ${sub.cost}`,
             sub.frequency,
-            new Date(sub.renewalDate).toLocaleDateString(),
+            new Date(sub.nextRenewalDate).toLocaleDateString(),
             sub.category?.name || 'Uncategorized'
         ]);
 
