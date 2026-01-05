@@ -51,7 +51,7 @@ function SubscriptionCard({ subscription, onDelete }: SubscriptionCardProps) {
     };
 
     // Use the correct Prisma field names
-    const renewalDate = subscription.renewalDate;
+    const renewalDate = subscription.nextRenewalDate;
     const cost = subscription.cost;
     const frequency = subscription.frequency;
 
