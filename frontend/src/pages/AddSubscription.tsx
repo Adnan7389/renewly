@@ -10,7 +10,7 @@ import type { SubscriptionFrequency, Category, Tag } from '../types';
 interface SubscriptionFormData {
     name: string;
     cost: string;  // String in form, converted to number on submit
-    renewalDate: string;  // ISO date string (YYYY-MM-DD)
+    startDate: string;  // ISO date string (YYYY-MM-DD)
     frequency: SubscriptionFrequency;
     description: string;
     categoryId: string;
@@ -29,7 +29,7 @@ function AddSubscription() {
     const [formData, setFormData] = useState<SubscriptionFormData>({
         name: '',
         cost: '',
-        renewalDate: '',
+        startDate: '',
         frequency: 'MONTHLY',
         description: '',
         categoryId: '',
@@ -72,7 +72,7 @@ function AddSubscription() {
                 setFormData({
                     name: subscription.name,
                     cost: subscription.cost.toString(),                    // Correct: cost
-                    renewalDate: new Date(subscription.renewalDate).toISOString().split('T')[0],  // Correct: renewalDate
+                    startDate: new Date(subscription.startDate).toISOString().split('T')[0],  // Correct: startDate
                     frequency: subscription.frequency,                     // Correct: frequency
                     description: subscription.description || '',           // Correct: description
                     categoryId: subscription.categoryId || '',
@@ -139,7 +139,7 @@ function AddSubscription() {
         try {
             // EXPLANATION: The backend controller expects the OLD field names:
             // - cost (not price)
-            // - renewalDate (not nextBillingDate)  
+            // - startDate (not renewalDate or nextBillingDate)
             // - frequency (not billingCycle)
             // This is because the backend controller hasn't been updated to use
             // the new Prisma schema field names yet.
@@ -147,7 +147,7 @@ function AddSubscription() {
             const subscriptionData = {
                 name: formData.name,
                 cost: parseFloat(formData.cost),           // Backend expects 'cost'
-                renewalDate: formData.renewalDate,         // Backend expects 'renewalDate'
+                startDate: formData.startDate,             // Backend expects 'startDate'
                 frequency: formData.frequency,             // Backend expects 'frequency'
                 description: formData.description,
                 categoryId: formData.categoryId || null,
@@ -225,16 +225,16 @@ function AddSubscription() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="renewalDate" className="block text-sm font-medium text-[var(--foreground)] mb-2">
-                                Next Renewal Date *
+                            <label htmlFor="startDate" className="block text-sm font-medium text-[var(--foreground)] mb-2">
+                                Anchor / First Billing Date *
                             </label>
                             <input
                                 type="date"
-                                id="renewalDate"
-                                name="renewalDate"
+                                id="startDate"
+                                name="startDate"
                                 required
                                 className="input-field"
-                                value={formData.renewalDate}
+                                value={formData.startDate}
                                 onChange={handleChange}
                             />
                         </div>
