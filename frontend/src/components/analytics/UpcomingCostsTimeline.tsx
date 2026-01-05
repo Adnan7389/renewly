@@ -54,7 +54,7 @@ const UpcomingCostsTimeline: React.FC<UpcomingCostsTimelineProps> = ({
             ) : (
                 <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
                     {data.map((item) => {
-                        const renewalDate = new Date(item.renewalDate);
+                        const renewalDate = new Date(item.nextRenewalDate);
                         const isToday = differenceInDays(renewalDate, new Date()) === 0;
                         const isUrgent = item.daysUntil <= 3;
 
