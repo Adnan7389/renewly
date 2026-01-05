@@ -64,7 +64,7 @@ function Dashboard() {
     const getUpcomingSubscriptions = (): Subscription[] => {
         const today = new Date();
         return subscriptions.filter(sub => {
-            const renewalDate = new Date(sub.renewalDate);  // Correct field name
+            const renewalDate = new Date(sub.nextRenewalDate);  // Correct field name
             const diffTime = renewalDate.getTime() - today.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             return diffDays <= 3 && diffDays >= 0;
