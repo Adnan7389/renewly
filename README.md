@@ -5,7 +5,8 @@ Renewly is a full-stack web application designed to help users track their subsc
 ## 🚀 Features
 
 -   **Dashboard Overview:** Get a quick summary of your active subscriptions, total monthly cost, and upcoming renewals.
--   **Subscription Management:** Add, edit, and delete subscriptions with details like cost, renewal date, and frequency.
+-   **Subscription Management:** Add, edit, and delete subscriptions with details like cost, anchor date, and frequency.
+-   **Dynamic Renewal Projections:** Automatically calculates the next billing date based on a fixed anchor, preventing data drift and staleness.
 -   **Categories & Tags:** Organize subscriptions by categories (e.g., Entertainment, Utilities) and custom tags for better filtering.
 -   **Analytics & Insights:** Visualize spending trends, category breakdowns, and year-over-year costs with interactive charts.
 -   **Automated Reminders:** Receive email notifications before your subscriptions renew (customizable reminder timing).
@@ -34,6 +35,28 @@ Renewly is a full-stack web application designed to help users track their subsc
 ### DevOps & Tools
 -   **Docker:** Containerization for backend and database.
 -   **pgAdmin:** Database management interface (via Docker).
+
+## 🔄 Robust Renewal Logic
+
+Renewly uses an **Anchor-Based Projection** system to handle recurring subscriptions. This ensures that renewal dates are always accurate and resilient to server downtime or "sleep" modes.
+
+### How it Works
+Unlike traditional systems that mutate the database nightly, Renewly treats the initial billing date as an immutable **Anchor** (`startDate`).
+
+-   **Dynamic Projection:** The system calculates the *next* valid renewal date on-the-fly when data is requested.
+-   **Drift Prevention:** Calculations reference the original anchor day to prevent dates from "drifting" (e.g., ensuring a Jan 31st subscription always lands on the last day of subsequent months).
+-   **Self-Healing:** If the server is offline for an extended period, it automatically projects the correct future renewal date immediately upon returning online.
+
+### Code Locations
+-   **Core Logic:** [renewalUtils.ts](file:///home/adnan/repos/renewly/backend/src/utils/renewalUtils.ts) handles robust arithmetic for Weekly, Monthly, Quarterly, and Yearly cycles.
+-   **Data Mapping:** [subscriptionController.ts](file:///home/adnan/repos/renewly/backend/src/controllers/subscriptionController.ts) injects the calculated `nextRenewalDate` into API responses.
+-   **Email Reminders:** [cronService.ts](file:///home/adnan/repos/renewly/backend/src/services/cronService.ts) uses projection math to determine when to trigger notifications without modifying database records.
+
+### Integration
+The system integrates seamlessly across the stack:
+1.  **Backend:** Maps `startDate` to `nextRenewalDate` in both subscription and analytics controllers.
+2.  **Frontend:** The [Subscription](file:///home/adnan/repos/renewly/frontend/src/types/subscription.ts) type includes both the anchor and the projected date, allowing components like `SubscriptionCard` and `UpcomingCostsTimeline` to display accurate future dates.
+
 
 ## 📂 Folder Structure
 
