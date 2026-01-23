@@ -9,5 +9,11 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
       - key: NODE_ENV
         value: production
