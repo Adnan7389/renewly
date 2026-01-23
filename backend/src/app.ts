@@ -9,6 +9,7 @@ import categoryRoutes from './routes/categories';
 import tagRoutes from './routes/tags';
 import userRoutes from './routes/users';
 import analyticsRoutes from './routes/analytics';
+import internalRoutes from './routes/internal';
 
 // Import services
 import cronService from './services/cronService';
@@ -31,6 +32,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/internal', internalRoutes);
 
 // Health check
 app.get('/api/health', (req: express.Request, res: express.Response) => {
@@ -51,7 +53,12 @@ app.use('*', (req: express.Request, res: express.Response) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-// Start cron services
-cronService.startDailyEmailCron();
+// Start cron services (Internal scheduler)
+// In production, we prefer external triggers to avoid Render's free tier sleep issues.
+if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_INTERNAL_CRON === 'true') {
+    cronService.startDailyEmailCron();
+} else {
+    console.log('ℹ️ Internal cron disabled (Production mode). Relying on external triggers.');
+}
 
 export default app;
