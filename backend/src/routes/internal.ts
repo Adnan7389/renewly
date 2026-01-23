@@ -22,25 +22,20 @@ router.post('/ping', cronAuth, (req: Request, res: Response) => {
  * @desc Externally trigger the daily subscription reminder email job
  * @access Private (Cron Secret)
  */
-router.post('/run-reminders', cronAuth, async (req: Request, res: Response) => {
+router.post('/run-reminders', cronAuth, (req: Request, res: Response) => {
     console.log('⚡ External trigger received: run-reminders');
     
-    try {
-        // Trigger the business logic directly
-        await cronService.sendDailyReminders();
-        
-        res.json({
-            success: true,
-            message: 'Reminder job triggered successfully',
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        console.error('❌ Failed to run external reminder job:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to complete reminder job'
-        });
-    }
+    // Trigger the business logic in the background to avoid timeouts
+    cronService.sendDailyReminders()
+        .then(() => console.log('✅ Background reminder job finished'))
+        .catch(error => console.error('❌ Background reminder job failed:', error));
+    
+    // Return 202 Accepted immediately
+    res.status(202).json({
+        success: true,
+        message: 'Reminder job accepted and running in background',
+        timestamp: new Date().toISOString()
+    });
 });
 
 export default router;
