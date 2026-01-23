@@ -10,6 +10,7 @@ Renewly is a full-stack web application designed to help users track their subsc
 -   **Categories & Tags:** Organize subscriptions by categories (e.g., Entertainment, Utilities) and custom tags for better filtering.
 -   **Analytics & Insights:** Visualize spending trends, category breakdowns, and year-over-year costs with interactive charts.
 -   **Automated Reminders:** Receive email notifications before your subscriptions renew (customizable reminder timing).
+-   **Production Reliability:** Securely triggered external cron architecture optimized for Render/free-tier hosting.
 -   **User Preferences:** Customize notification settings and other user-specific options.
 -   **Secure Authentication:** User registration and login with JWT-based authentication.
 
@@ -51,6 +52,7 @@ Unlike traditional systems that mutate the database nightly, Renewly treats the 
 -   **Core Logic:** [renewalUtils.ts](file:///home/adnan/repos/renewly/backend/src/utils/renewalUtils.ts) handles robust arithmetic for Weekly, Monthly, Quarterly, and Yearly cycles.
 -   **Data Mapping:** [subscriptionController.ts](file:///home/adnan/repos/renewly/backend/src/controllers/subscriptionController.ts) injects the calculated `nextRenewalDate` into API responses.
 -   **Email Reminders:** [cronService.ts](file:///home/adnan/repos/renewly/backend/src/services/cronService.ts) uses projection math to determine when to trigger notifications without modifying database records.
+-   **Reliability Layer:** A secure external trigger pattern (Warm-up + Execution) ensures reminders fire even if the server is in sleep mode.
 
 ### Integration
 The system integrates seamlessly across the stack:
@@ -161,6 +163,17 @@ This will start:
 -   **pgAdmin** on port `8080`
 -   **Backend API** on port `3001`
 
+## 🛠 Production Reliability (External Triggers)
+
+On hosting platforms like Render (Free Tier), internal `node-cron` jobs are unreliable because the instance "sleeps" after inactivity. Renewly uses a **Two-Stage External Trigger** pattern to solve this:
+
+1.  **Warm-up (7:50 AM UTC)**: An external service pings `/api/internal/ping` (Secured) to wake the instance.
+2.  **Execution (8:00 AM UTC)**: An external service hits `/api/internal/run-reminders` (Secured) to process and send emails.
+
+### Code Locations
+- **Security Middleware:** [cronAuth.ts](file:///home/adnan/repos/renewly/backend/src/middleware/cronAuth.ts) - Validates `x-cron-secret` headers.
+- **Internal Routes:** [internal.ts](file:///home/adnan/repos/renewly/backend/src/routes/internal.ts) - Exposes secure maintenance endpoints.
+
 ## 📡 API Endpoints
 
 ### Authentication
@@ -193,6 +206,13 @@ This will start:
 ### User Preferences
 -   `GET /api/users/preferences` - Get user notification preferences
 -   `PUT /api/users/preferences` - Update preferences
+
+### Internal (Private)
+-   `POST /api/internal/ping` - Secure warm-up endpoint
+-   `POST /api/internal/run-reminders` - Trigger email notification job
+
+> [!NOTE]
+> Internal endpoints require the `x-cron-secret` header matching the `CRON_SECRET` environment variable.
 
 ## 🤝 Contributing
 
