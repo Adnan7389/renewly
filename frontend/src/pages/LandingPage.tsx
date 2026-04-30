@@ -88,12 +88,12 @@ export default function LandingPage() {
                     </div>
 
                     {/* Dashboard Preview */}
-                    <div className="relative max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-2xl overflow-hidden aspect-[16/9] group">
+                    <div className="relative max-w-5xl mx-auto rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-2xl overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent opacity-20 z-10 pointer-events-none"></div>
                         <img
-                            src="/dashboard-preview.png"
-                            alt="Renewly Dashboard Preview"
-                            className="w-full h-full object-cover object-top"
+                            src="/dashboard-stack-preview.png"
+                            alt="Renewly Subscription Stack Preview"
+                            className="w-full h-auto object-contain"
                         />
                     </div>
                 </div>
