@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
+import { toast } from 'sonner';
 import ExportButtons from '../components/ExportButtons';
 import type { Subscription } from '../types';
 
@@ -14,7 +15,6 @@ function Settings() {
     const [reminderDays, setReminderDays] = useState<number>(1);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ function Settings() {
             setSubscriptions(subs);
         } catch (error) {
             console.error('Failed to fetch data:', error);
-            setMessage({ type: 'error', text: 'Failed to load settings' });
+            toast.error('Failed to load settings');
         } finally {
             setLoading(false);
         }
@@ -39,13 +39,12 @@ function Settings() {
 
     const handleSave = async () => {
         setSaving(true);
-        setMessage(null);
         try {
             await api.updatePreferences(reminderDays);
-            setMessage({ type: 'success', text: 'Settings saved successfully' });
+            toast.success('Settings saved successfully');
         } catch (error) {
             console.error('Failed to update preferences:', error);
-            setMessage({ type: 'error', text: 'Failed to save settings' });
+            toast.error('Failed to save settings');
         } finally {
             setSaving(false);
         }
@@ -79,12 +78,7 @@ function Settings() {
                     </p>
                 </div>
                 <div className="border-t border-[var(--border)] px-4 py-5 sm:p-6">
-                    {message && (
-                        <div className={`mb-4 p-4 rounded-md ${message.type === 'success' ? 'bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20' : 'bg-[var(--destructive)]/10 text-[var(--destructive)] border border-[var(--destructive)]/20'
-                            }`}>
-                            {message.text}
-                        </div>
-                    )}
+
 
                     <div className="space-y-4">
                         <label className="text-base font-medium text-[var(--foreground)]">
