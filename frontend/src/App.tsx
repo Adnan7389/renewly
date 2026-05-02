@@ -9,6 +9,7 @@ import Analytics from './pages/Analytics.tsx';
 import Navbar from './components/Navbar.tsx';
 import LandingPage from './pages/LandingPage.tsx';
 import { DarkModeProvider } from './contexts/DarkModeContext.tsx';
+import { Toaster } from 'sonner';
 import { api } from './services/api';
 import type { AuthResponse } from './types';
 
@@ -95,6 +96,7 @@ function App() {
 
     return (
         <DarkModeProvider>
+            <Toaster position="top-right" richColors />
             <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <div className="min-h-screen bg-[var(--background)]">
                     {user && <Navbar user={user} onLogout={logout} />}
