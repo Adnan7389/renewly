@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import SubscriptionCard from '../components/SubscriptionCard.tsx';
 import Modal from '../components/Modal.tsx';
@@ -50,6 +51,8 @@ function Dashboard() {
 
             // Close modal immediately for instant feedback
             setDeleteModal({ isOpen: false, subscriptionId: null });
+            
+            toast.success('Subscription deleted');
 
             return { previousSubscriptions };
         },
@@ -58,6 +61,7 @@ function Dashboard() {
             if (context?.previousSubscriptions) {
                 queryClient.setQueryData(['subscriptions'], context.previousSubscriptions);
             }
+            toast.error('Failed to delete subscription');
         },
         onSettled: () => {
             // Sync with server
@@ -122,9 +126,9 @@ function Dashboard() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {(isError || deleteMutation.isError) && (
+            {isError && (
                 <div className="mb-6 bg-[var(--destructive)] border border-[var(--destructive)] text-[var(--destructive-foreground)] px-4 py-3 rounded-md">
-                    Failed to fetch or modify subscriptions.
+                    Failed to fetch subscriptions.
                 </div>
             )}
 
