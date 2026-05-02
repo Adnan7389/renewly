@@ -33,9 +33,35 @@ function Dashboard() {
 
     const deleteMutation = useMutation({
         mutationFn: (id: string) => api.deleteSubscription(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+        onMutate: async (deletedId) => {
+            // Cancel outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['subscriptions'] });
+
+            // Snapshot the previous subscriptions
+            const previousSubscriptions = queryClient.getQueryData<Subscription[]>(['subscriptions']);
+
+            // Optimistically update the cache
+            if (previousSubscriptions) {
+                queryClient.setQueryData<Subscription[]>(
+                    ['subscriptions'],
+                    previousSubscriptions.filter(sub => sub.id !== deletedId)
+                );
+            }
+
+            // Close modal immediately for instant feedback
             setDeleteModal({ isOpen: false, subscriptionId: null });
+
+            return { previousSubscriptions };
+        },
+        onError: (_err, _deletedId, context) => {
+            // Rollback on error
+            if (context?.previousSubscriptions) {
+                queryClient.setQueryData(['subscriptions'], context.previousSubscriptions);
+            }
+        },
+        onSettled: () => {
+            // Sync with server
+            queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
         },
     });
 

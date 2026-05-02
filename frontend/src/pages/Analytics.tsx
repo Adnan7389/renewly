@@ -53,7 +53,7 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* Key Metrics Cards */}
-            <InsightCards data={insights} isLoading={loadingInsights} />
+            <InsightCards data={insights || null} isLoading={loadingInsights} />
 
             {/* Main Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
