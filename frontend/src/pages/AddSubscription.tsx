@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import { api } from '../services/api';
 import type { SubscriptionFrequency, Category, Tag } from '../types';
 
@@ -156,13 +157,16 @@ function AddSubscription() {
 
             if (isEditing) {
                 await api.updateSubscription(id!, subscriptionData);
+                toast.success('Subscription updated successfully');
             } else {
                 await api.createSubscription(subscriptionData);
+                toast.success('Subscription added successfully');
             }
 
             navigate('/dashboard');
         } catch (error: any) {
-            setError(error.response?.data?.error || `Failed to ${isEditing ? 'update' : 'create'} subscription`);
+            const message = error.response?.data?.error || `Failed to ${isEditing ? 'update' : 'create'} subscription`;
+            toast.error(message);
         } finally {
             setLoading(false);
         }
@@ -181,11 +185,7 @@ function AddSubscription() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    {error && (
-                        <div className="bg-[var(--destructive)]/10 border border-[var(--destructive)]/20 text-[var(--destructive)] px-4 py-3 rounded-md">
-                            {error}
-                        </div>
-                    )}
+
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
