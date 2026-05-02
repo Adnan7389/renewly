@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import SubscriptionCard from '../components/SubscriptionCard.tsx';
 import Modal from '../components/Modal.tsx';
@@ -18,39 +19,28 @@ interface DeleteModalState {
  * Displays subscription statistics and list of all subscriptions
  */
 function Dashboard() {
-    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>('');
+    const queryClient = useQueryClient();
+    
     const [deleteModal, setDeleteModal] = useState<DeleteModalState>({
         isOpen: false,
         subscriptionId: null
     });
 
-    useEffect(() => {
-        fetchSubscriptions();
-    }, []);
+    const { data: subscriptions = [], isLoading: loading, isError } = useQuery({
+        queryKey: ['subscriptions'],
+        queryFn: api.getSubscriptions,
+    });
 
-    const fetchSubscriptions = async (): Promise<void> => {
-        try {
-            const data = await api.getSubscriptions();
-            setSubscriptions(data);
-        } catch (error) {
-            setError('Failed to fetch subscriptions');
-            console.error('Fetch subscriptions error:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDeleteSubscription = async (id: string): Promise<void> => {  // Changed to string
-        try {
-            await api.deleteSubscription(id);
-            setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => api.deleteSubscription(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
             setDeleteModal({ isOpen: false, subscriptionId: null });
-        } catch (error) {
-            setError('Failed to delete subscription');
-            console.error('Delete subscription error:', error);
-        }
+        },
+    });
+
+    const handleDeleteSubscription = (id: string): void => {
+        deleteMutation.mutate(id);
     };
 
     const openDeleteModal = (id: string): void => {  // Changed to string
@@ -106,9 +96,9 @@ function Dashboard() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {error && (
+            {(isError || deleteMutation.isError) && (
                 <div className="mb-6 bg-[var(--destructive)] border border-[var(--destructive)] text-[var(--destructive-foreground)] px-4 py-3 rounded-md">
-                    {error}
+                    Failed to fetch or modify subscriptions.
                 </div>
             )}
 
