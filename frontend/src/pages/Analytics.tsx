@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { analyticsService } from '../services/analytics';
 import SpendingTrendsChart from '../components/analytics/SpendingTrendsChart';
 import CategoryBreakdownChart from '../components/analytics/CategoryBreakdownChart';
@@ -7,22 +8,6 @@ import InsightCards from '../components/analytics/InsightCards';
 import UpcomingCostsTimeline from '../components/analytics/UpcomingCostsTimeline';
 
 const Analytics: React.FC = () => {
-    // State for all data
-    const [insights, setInsights] = useState<any>(null);
-    const [spendingTrends, setSpendingTrends] = useState<any>(null);
-    const [categoryBreakdown, setCategoryBreakdown] = useState<any>(null);
-    const [yearOverYear, setYearOverYear] = useState<any>(null);
-    const [upcomingCosts, setUpcomingCosts] = useState<any>(null);
-
-    // Loading states
-    const [loading, setLoading] = useState({
-        insights: true,
-        trends: true,
-        categories: true,
-        yoy: true,
-        upcoming: true
-    });
-
     // Filters
     const [trendRange, setTrendRange] = useState(12);
     const [yoyYears] = useState({
@@ -30,81 +15,30 @@ const Analytics: React.FC = () => {
         year2: new Date().getFullYear()
     });
 
-    // Fetch Insights
-    useEffect(() => {
-        const fetchInsights = async () => {
-            try {
-                const data = await analyticsService.getInsights();
-                setInsights(data);
-            } catch (error) {
-                console.error('Failed to fetch insights', error);
-            } finally {
-                setLoading(prev => ({ ...prev, insights: false }));
-            }
-        };
-        fetchInsights();
-    }, []);
+    const { data: insights, isLoading: loadingInsights } = useQuery({
+        queryKey: ['analytics', 'insights'],
+        queryFn: () => analyticsService.getInsights()
+    });
 
-    // Fetch Spending Trends
-    useEffect(() => {
-        const fetchTrends = async () => {
-            setLoading(prev => ({ ...prev, trends: true }));
-            try {
-                const data = await analyticsService.getSpendingTrends(trendRange);
-                setSpendingTrends(data);
-            } catch (error) {
-                console.error('Failed to fetch trends', error);
-            } finally {
-                setLoading(prev => ({ ...prev, trends: false }));
-            }
-        };
-        fetchTrends();
-    }, [trendRange]);
+    const { data: spendingTrends, isLoading: loadingTrends } = useQuery({
+        queryKey: ['analytics', 'trends', trendRange],
+        queryFn: () => analyticsService.getSpendingTrends(trendRange)
+    });
 
-    // Fetch Category Breakdown
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const data = await analyticsService.getCategoryBreakdown();
-                setCategoryBreakdown(data);
-            } catch (error) {
-                console.error('Failed to fetch categories', error);
-            } finally {
-                setLoading(prev => ({ ...prev, categories: false }));
-            }
-        };
-        fetchCategories();
-    }, []);
+    const { data: categoryBreakdown, isLoading: loadingCategories } = useQuery({
+        queryKey: ['analytics', 'categories'],
+        queryFn: () => analyticsService.getCategoryBreakdown()
+    });
 
-    // Fetch Year Over Year
-    useEffect(() => {
-        const fetchYoY = async () => {
-            try {
-                const data = await analyticsService.getYearOverYear(yoyYears.year1, yoyYears.year2);
-                setYearOverYear(data);
-            } catch (error) {
-                console.error('Failed to fetch YoY', error);
-            } finally {
-                setLoading(prev => ({ ...prev, yoy: false }));
-            }
-        };
-        fetchYoY();
-    }, [yoyYears]);
+    const { data: yearOverYear, isLoading: loadingYoy } = useQuery({
+        queryKey: ['analytics', 'yoy', yoyYears.year1, yoyYears.year2],
+        queryFn: () => analyticsService.getYearOverYear(yoyYears.year1, yoyYears.year2)
+    });
 
-    // Fetch Upcoming Costs
-    useEffect(() => {
-        const fetchUpcoming = async () => {
-            try {
-                const data = await analyticsService.getUpcomingCosts(30);
-                setUpcomingCosts(data);
-            } catch (error) {
-                console.error('Failed to fetch upcoming costs', error);
-            } finally {
-                setLoading(prev => ({ ...prev, upcoming: false }));
-            }
-        };
-        fetchUpcoming();
-    }, []);
+    const { data: upcomingCosts, isLoading: loadingUpcoming } = useQuery({
+        queryKey: ['analytics', 'upcoming', 30],
+        queryFn: () => analyticsService.getUpcomingCosts(30)
+    });
 
     return (
         <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -119,7 +53,7 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* Key Metrics Cards */}
-            <InsightCards data={insights} isLoading={loading.insights} />
+            <InsightCards data={insights} isLoading={loadingInsights} />
 
             {/* Main Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -129,7 +63,7 @@ const Analytics: React.FC = () => {
                         data={spendingTrends?.data || []}
                         range={trendRange}
                         onRangeChange={setTrendRange}
-                        isLoading={loading.trends}
+                        isLoading={loadingTrends}
                     />
                 </div>
 
@@ -139,7 +73,7 @@ const Analytics: React.FC = () => {
                         categories={categoryBreakdown?.categories || []}
                         uncategorized={categoryBreakdown?.uncategorized || { total: 0, percentage: 0, count: 0 }}
                         totalMonthly={categoryBreakdown?.totalMonthly || 0}
-                        isLoading={loading.categories}
+                        isLoading={loadingCategories}
                     />
                 </div>
             </div>
@@ -152,7 +86,7 @@ const Analytics: React.FC = () => {
                         data={yearOverYear?.monthlyComparison || []}
                         year1={yearOverYear?.year1 || yoyYears.year1}
                         year2={yearOverYear?.year2 || yoyYears.year2}
-                        isLoading={loading.yoy}
+                        isLoading={loadingYoy}
                     />
                 </div>
 
@@ -161,7 +95,7 @@ const Analytics: React.FC = () => {
                     <UpcomingCostsTimeline
                         data={upcomingCosts?.upcomingRenewals || []}
                         days={30}
-                        isLoading={loading.upcoming}
+                        isLoading={loadingUpcoming}
                     />
                 </div>
             </div>
