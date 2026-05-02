@@ -9,6 +9,8 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@tanstack/react-query": "^5.100.8",
+        "@tanstack/react-query-devtools": "^5.100.8",
         "axios": "^1.6.0",
         "chart.js": "^4.5.1",
         "date-fns": "^4.1.0",
