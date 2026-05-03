@@ -29,7 +29,7 @@ function Dashboard() {
 
     const { data: subscriptions = [], isLoading: loading, isError } = useQuery({
         queryKey: ['subscriptions'],
-        queryFn: api.getSubscriptions,
+        queryFn: () => api.getSubscriptions(),
     });
 
     const deleteMutation = useMutation({
