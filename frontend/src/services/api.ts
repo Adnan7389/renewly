@@ -81,48 +81,48 @@ class ApiService {
     /**
      * Set or remove the authorization token
      */
-    setAuthToken(token: string | null): void {
+    setAuthToken = (token: string | null): void => {
         if (token) {
             this.api.defaults.headers.Authorization = `Bearer ${token}`;
         } else {
             delete this.api.defaults.headers.Authorization;
         }
-    }
+    };
 
     // ==================== Auth Methods ====================
 
     /**
      * Register a new user
      */
-    async register(userData: RegisterData): Promise<AuthResponse> {
+    register = async (userData: RegisterData): Promise<AuthResponse> => {
         const response = await this.api.post<AuthResponse>('/auth/register', userData);
         return response.data;
-    }
+    };
 
     /**
      * Login with email and password
      */
-    async login(credentials: LoginCredentials): Promise<AuthResponse> {
+    login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
         const response = await this.api.post<AuthResponse>('/auth/login', credentials);
         return response.data;
-    }
+    };
 
     /**
      * Logout and invalidate refresh token
      */
-    async logout(refreshToken: string): Promise<void> {
+    logout = async (refreshToken: string): Promise<void> => {
         await this.api.post('/auth/logout', { refreshToken });
-    }
+    };
 
     // ==================== Subscription Methods ====================
 
     /**
      * Get all subscriptions for the authenticated user
      */
-    async getSubscriptions(): Promise<Subscription[]> {
+    getSubscriptions = async (): Promise<Subscription[]> => {
         const response = await this.api.get<Subscription[]>('/subscriptions');
         return response.data;
-    }
+    };
 
     /**
      * Create a new subscription
@@ -131,102 +131,102 @@ class ApiService {
      * - startDate
      * - frequency
      */
-    async createSubscription(subscriptionData: any): Promise<Subscription> {
+    createSubscription = async (subscriptionData: any): Promise<Subscription> => {
         const response = await this.api.post<Subscription>('/subscriptions', subscriptionData);
         return response.data;
-    }
+    };
 
     /**
      * Update an existing subscription
      * Note: Accepts any type because backend expects different field names
      */
-    async updateSubscription(id: string, subscriptionData: any): Promise<Subscription> {
+    updateSubscription = async (id: string, subscriptionData: any): Promise<Subscription> => {
         const response = await this.api.put<Subscription>(`/subscriptions/${id}`, subscriptionData);
         return response.data;
-    }
+    };
 
     /**
      * Delete a subscription
      */
-    async deleteSubscription(id: string): Promise<void> {
+    deleteSubscription = async (id: string): Promise<void> => {
         await this.api.delete(`/subscriptions/${id}`);
-    }
+    };
 
     // ==================== Category Methods ====================
 
-    async getCategories(): Promise<any[]> {
+    getCategories = async (): Promise<any[]> => {
         const response = await this.api.get('/categories');
         return response.data;
-    }
+    };
 
-    async createCategory(data: { name: string; color?: string }): Promise<any> {
+    createCategory = async (data: { name: string; color?: string }): Promise<any> => {
         const response = await this.api.post('/categories', data);
         return response.data;
-    }
+    };
 
     // ==================== Tag Methods ====================
 
-    async getTags(): Promise<any[]> {
+    getTags = async (): Promise<any[]> => {
         const response = await this.api.get('/tags');
         return response.data;
-    }
+    };
 
-    async createTag(data: { name: string }): Promise<any> {
+    createTag = async (data: { name: string }): Promise<any> => {
         const response = await this.api.post('/tags', data);
         return response.data;
-    }
+    };
 
     // ==================== User Preferences Methods ====================
 
     /**
      * Get user notification preferences
      */
-    async getPreferences(): Promise<UserPreferences> {
+    getPreferences = async (): Promise<UserPreferences> => {
         const response = await this.api.get<UserPreferences>('/users/preferences');
         return response.data;
-    }
+    };
 
     /**
      * Update user notification preferences
      */
-    async updatePreferences(reminderDays: number): Promise<UserPreferences> {
+    updatePreferences = async (reminderDays: number): Promise<UserPreferences> => {
         const response = await this.api.put<UserPreferences>('/users/preferences', { reminderDays });
         return response.data;
-    }
+    };
 
     // ==================== Generic Methods ====================
 
     /**
      * Generic GET request
      */
-    async get<T = any>(url: string): Promise<T> {
+    get = async <T = any>(url: string): Promise<T> => {
         const response = await this.api.get<T>(url);
         return response.data;
-    }
+    };
 
     /**
      * Generic POST request
      */
-    async post<T = any>(url: string, data?: any): Promise<T> {
+    post = async <T = any>(url: string, data?: any): Promise<T> => {
         const response = await this.api.post<T>(url, data);
         return response.data;
-    }
+    };
 
     /**
      * Generic PUT request
      */
-    async put<T = any>(url: string, data?: any): Promise<T> {
+    put = async <T = any>(url: string, data?: any): Promise<T> => {
         const response = await this.api.put<T>(url, data);
         return response.data;
-    }
+    };
 
     /**
      * Generic DELETE request
      */
-    async delete<T = any>(url: string): Promise<T> {
+    delete = async <T = any>(url: string): Promise<T> => {
         const response = await this.api.delete<T>(url);
         return response.data;
-    }
+    };
 }
 
 export const api = new ApiService();
