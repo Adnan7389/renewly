@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { api } from '../services/api';
 import type { SubscriptionFrequency, Category, Tag } from '../types';
@@ -24,6 +25,7 @@ interface SubscriptionFormData {
  */
 function AddSubscription() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { id } = useParams<{ id: string }>();
     const isEditing = Boolean(id);
 
@@ -162,6 +164,12 @@ function AddSubscription() {
                 await api.createSubscription(subscriptionData);
                 toast.success('Subscription added successfully');
             }
+
+            // Invalidate both subscriptions and analytics caches to ensure everything is fresh
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ['subscriptions'] }),
+                queryClient.invalidateQueries({ queryKey: ['analytics'] })
+            ]);
 
             navigate('/dashboard');
         } catch (error: any) {
