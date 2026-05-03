@@ -64,8 +64,9 @@ function Dashboard() {
             toast.error('Failed to delete subscription');
         },
         onSettled: () => {
-            // Sync with server
+            // Sync with server and refresh analytics
             queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+            queryClient.invalidateQueries({ queryKey: ['analytics'] });
         },
     });
 
